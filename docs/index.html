@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STRSearch Business Data Explorer</title>
+  <meta name="description" content="How STRSearch's sales (Pipedrive) and client acquisition (Jira) data fit together: lifecycle, trends, milestone timing, conversion and data quality.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/strsearch-logo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>
+    try { var t = localStorage.getItem('sx-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="#overview" aria-label="STRSearch Business Data Explorer: back to top">
+        <img src="assets/img/strsearch-logo.webp" alt="STR Search" width="104" height="30">
+        <span class="brand-title">Business Data Explorer <span>· Pipedrive + Jira</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Sections">
+        <a href="#overview">Overview</a>
+        <a href="#how">How it works</a>
+        <a href="#questions">Key questions</a>
+        <a href="#sales">Sales</a>
+        <a href="#acquisition">Acquisition</a>
+        <a href="#lifecycle">Connected</a>
+        <a href="#health">Data health</a>
+        <a href="#explorer">Explorer</a>
+        <a href="#definitions">Definitions</a>
+      </nav>
+      <button class="icon-btn nav-menu-btn" id="navMenuBtn" type="button" aria-label="Open section menu" aria-expanded="false">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle dark mode" title="Toggle light / dark">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 12.2A7 7 0 017.8 3.5a7 7 0 108.7 8.7z"/></svg>
+      </button>
+    </div>
+  </header>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Sections (mobile)"></nav>
+
+  <div class="filter-bar" id="filterBar" role="region" aria-label="Filters"></div>
+
+  <main id="main">
+    <section class="hero" id="overview" aria-labelledby="overview-title">
+      <div class="container" id="overview-root"><div class="loading">Loading data…</div></div>
+    </section>
+    <section class="section" id="how" aria-labelledby="how-title"><div class="container" id="how-root"></div></section>
+    <section class="section" id="questions" aria-labelledby="questions-title"><div class="container" id="questions-root"></div></section>
+    <section class="section" id="sales" aria-labelledby="sales-title"><div class="container" id="sales-root"></div></section>
+    <section class="section" id="acquisition" aria-labelledby="acquisition-title"><div class="container" id="acquisition-root"></div></section>
+    <section class="section" id="lifecycle" aria-labelledby="lifecycle-title"><div class="container" id="lifecycle-root"></div></section>
+    <section class="section" id="health" aria-labelledby="health-title"><div class="container" id="health-root"></div></section>
+    <section class="section" id="explorer" aria-labelledby="explorer-title"><div class="container" id="explorer-root"></div></section>
+    <section class="section" id="definitions" aria-labelledby="definitions-title"><div class="container" id="definitions-root"></div></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container" id="footer-root"></div>
+  </footer>
+
+  <script src="assets/vendor/echarts-5.5.0.min.js"></script>
+  <script src="data/explorer-data.js"></script>
+  <script src="assets/js/core.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/filters.js"></script>
+  <script src="assets/js/sections/narrative.js"></script>
+  <script src="assets/js/sections/questions.js"></script>
+  <script src="assets/js/sections/sales.js"></script>
+  <script src="assets/js/sections/acquisition.js"></script>
+  <script src="assets/js/sections/health.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

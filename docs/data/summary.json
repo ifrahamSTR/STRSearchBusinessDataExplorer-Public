@@ -1,0 +1,1308 @@
+{
+ "meta": {
+  "title": "STRSearch Business Data Explorer",
+  "built_at": "2026-11-13 19:35",
+  "asof": "2026-11-11",
+  "snapshot_label": "Pipedrive 2026-11-12 \u00b7 Jira 2026-11-11",
+  "snapshots": {
+   "pipedrive": "2026-11-12 17:21",
+   "jira": "2026-11-11 16:46"
+  },
+  "first_month": "2024-02",
+  "sources": [
+   {
+    "key": "jira",
+    "file": "DIM - JIRA Client Data.xlsx",
+    "sheet": "JIRA_Clients",
+    "rows": 1556,
+    "columns": 78,
+    "file_modified": "2026-11-12 14:15",
+    "snapshot": "2026-11-11 16:46"
+   },
+   {
+    "key": "deals",
+    "file": "DIM - Pipedrive_API.xlsx",
+    "sheet": "Pipedrive_Deals",
+    "rows": 23222,
+    "columns": 112,
+    "file_modified": "2026-11-12 15:23",
+    "snapshot": "2026-11-12 17:21"
+   },
+   {
+    "key": "stages",
+    "file": "DIM - Pipedrive_API.xlsx",
+    "sheet": "Pipedrive_Stages",
+    "rows": 42,
+    "columns": 10,
+    "file_modified": "2026-11-12 15:23",
+    "snapshot": null
+   },
+   {
+    "key": "daily",
+    "file": "FCT - Daily_Reporting_STR_Search.xlsx",
+    "sheet": "Sales_Funnel",
+    "rows": 1005,
+    "columns": 27,
+    "file_modified": "2026-11-11 14:31",
+    "snapshot": null
+   }
+  ],
+  "anonymized": true,
+  "reports_folder": "Reporting Tables",
+  "counts": {
+   "deals_pipeline3": 7793,
+   "deals_in_scope": 7628,
+   "jira": 1556
+  }
+ },
+ "defs": {
+  "carson": {
+   "signed_up": [
+    "Client Start",
+    "2 Weeks",
+    "4 Weeks",
+    "6 Weeks",
+    "8 Weeks",
+    "Additional Service",
+    "under Contract",
+    "Passed Inspection",
+    "CLOSED",
+    "Photography Shared",
+    "Listed",
+    "Paused",
+    "Under Contract",
+    "Refunded",
+    "Content Pulled"
+   ],
+   "inactive": [
+    "Refunded",
+    "Paused",
+    "Additional Service"
+   ],
+   "active": [
+    "Client Start",
+    "2 Weeks",
+    "4 Weeks",
+    "6 Weeks",
+    "8 Weeks",
+    "under Contract",
+    "Passed Inspection",
+    "CLOSED",
+    "Photography Shared",
+    "Listed",
+    "Under Contract",
+    "Content Pulled"
+   ],
+   "effective_start": "COALESCE(issue_due_date, issue_created_date)"
+  },
+  "status_meta": {
+   "New Clients": {
+    "group": "Pre-sale onboarding",
+    "order": 1,
+    "meaning": "Issue created at onboarding booking; usually no status history yet and no won deal."
+   },
+   "Onboarding Completed": {
+    "group": "Pre-sale onboarding",
+    "order": 2,
+    "meaning": "Onboarding call done; the linked Pipedrive deal is normally not won yet."
+   },
+   "Services Declined": {
+    "group": "Declined",
+    "order": 3,
+    "meaning": "Did not buy after onboarding; linked deal is lost or still in follow-up."
+   },
+   "Client Start": {
+    "group": "Searching",
+    "order": 4,
+    "meaning": "Signed client, search kicked off."
+   },
+   "2 Weeks": {
+    "group": "Searching",
+    "order": 5,
+    "meaning": "Search check-in status (about two weeks in)."
+   },
+   "4 Weeks": {
+    "group": "Searching",
+    "order": 6,
+    "meaning": "Search check-in status (about four weeks in)."
+   },
+   "6 Weeks": {
+    "group": "Searching",
+    "order": 7,
+    "meaning": "Search check-in status (about six weeks in)."
+   },
+   "8 Weeks": {
+    "group": "Searching",
+    "order": 8,
+    "meaning": "Search check-in status (eight weeks or more)."
+   },
+   "Under Contract": {
+    "group": "Under contract",
+    "order": 9,
+    "meaning": "Property under contract."
+   },
+   "under Contract": {
+    "group": "Under contract",
+    "order": 9,
+    "meaning": "Historical spelling of Under Contract (changelog only)."
+   },
+   "Passed Inspection": {
+    "group": "Under contract",
+    "order": 10,
+    "meaning": "Under-contract property passed inspection."
+   },
+   "CLOSED": {
+    "group": "Closed",
+    "order": 11,
+    "meaning": "Client closed on a property."
+   },
+   "Photography Shared": {
+    "group": "Post-close",
+    "order": 12,
+    "meaning": "Post-close: listing photography delivered."
+   },
+   "Listed": {
+    "group": "Post-close",
+    "order": 13,
+    "meaning": "Post-close: property listed as an STR."
+   },
+   "Content Pulled": {
+    "group": "Post-close",
+    "order": 14,
+    "meaning": "Older (2024-25) clients; most closed. Exact meaning unconfirmed."
+   },
+   "Paused": {
+    "group": "Inactive",
+    "order": 15,
+    "meaning": "Signed client, search paused."
+   },
+   "Refunded": {
+    "group": "Inactive",
+    "order": 16,
+    "meaning": "Signed client who was refunded."
+   },
+   "Additional Service": {
+    "group": "Inactive",
+    "order": 17,
+    "meaning": "Additional-service track (not a standard search)."
+   }
+  },
+  "status_groups": [
+   {
+    "name": "Pre-sale onboarding",
+    "desc": "Prospect has a Jira issue but has not bought (New Client Experience, since late May 2026)."
+   },
+   {
+    "name": "Declined",
+    "desc": "Prospect went through onboarding but did not buy."
+   },
+   {
+    "name": "Searching",
+    "desc": "Signed client, property search under way (check-in cadence statuses)."
+   },
+   {
+    "name": "Under contract",
+    "desc": "Client has a property under contract / through inspection."
+   },
+   {
+    "name": "Closed",
+    "desc": "Client closed on a property."
+   },
+   {
+    "name": "Post-close",
+    "desc": "Post-close services (photography, listing) or archived content."
+   },
+   {
+    "name": "Inactive",
+    "desc": "Signed client who is paused, refunded or on an additional-service track."
+   },
+   {
+    "name": "Other",
+    "desc": "Status not recognised by this build."
+   }
+  ],
+  "stages": [
+   {
+    "id": 13,
+    "name": "Call Booked",
+    "order": 1
+   },
+   {
+    "id": 21,
+    "name": "Qualified + Deck Sent",
+    "order": 2
+   },
+   {
+    "id": 50,
+    "name": "Manual / No Automation",
+    "order": 3
+   },
+   {
+    "id": 41,
+    "name": "Follow Up 1",
+    "order": 4
+   },
+   {
+    "id": 45,
+    "name": "Follow Up 2",
+    "order": 5
+   },
+   {
+    "id": 46,
+    "name": "Final follow up",
+    "order": 6
+   },
+   {
+    "id": 43,
+    "name": "Engaged",
+    "order": 7
+   },
+   {
+    "id": 44,
+    "name": "HOT Leads",
+    "order": 8
+   },
+   {
+    "id": 70,
+    "name": "Long Term Followup",
+    "order": 9
+   },
+   {
+    "id": 56,
+    "name": "Services Engaged",
+    "order": 10
+   },
+   {
+    "id": 69,
+    "name": "Onboarding Form Submitted",
+    "order": 11
+   },
+   {
+    "id": 57,
+    "name": "Onboarding Scheduled",
+    "order": 12
+   },
+   {
+    "id": 58,
+    "name": "Onboarding Completed",
+    "order": 13
+   },
+   {
+    "id": 22,
+    "name": "Drafting Agreements",
+    "order": 14
+   },
+   {
+    "id": 17,
+    "name": "Contract Sent",
+    "order": 15
+   },
+   {
+    "id": 18,
+    "name": "Contract Signed",
+    "order": 16
+   }
+  ],
+  "qualified_stages": [
+   "Contract Sent",
+   "Contract Signed",
+   "Drafting Agreements",
+   "Qualified + Deck Sent"
+  ],
+  "excluded_lost_reasons": [
+   "Test Lead",
+   "Duplicate"
+  ],
+  "internal_domains": [
+   "@strsearch.com",
+   "@adclass.com",
+   "@techvestor.com",
+   "@strcribs.com",
+   "@pointanalytics"
+  ],
+  "options": {
+   "product": {
+    "203": {
+     "label": "Complete",
+     "evidence": "Raw_Pipedrive (Supabase EDA, Meta Campaign Reporting Tables) labels 131 of 132 labelled [203] deals 'Complete'."
+    },
+    "202": {
+     "label": "Core",
+     "evidence": "Raw_Pipedrive (Supabase EDA) labels 43 of 45 labelled [202] deals 'Core'."
+    }
+   },
+   "payment": {
+    "214": {
+     "label": "Likely Split Pay [214]",
+     "evidence": "Inferred, unconfirmed: 92.7% of coded wins; Carson says most clients choose Split Pay."
+    },
+    "215": {
+     "label": "Likely Full Pay [215]",
+     "evidence": "Inferred, unconfirmed: the remaining coded option."
+    }
+   }
+  },
+  "new_experience_date": "2026-05-27"
+ },
+ "expected": {
+  "deals": {
+   "in_scope": 7628,
+   "won": 871,
+   "lost": 5723,
+   "open": 1034,
+   "won_value": 15697909.0,
+   "median_days_to_win": 21.0
+  },
+  "jira": {
+   "total": 1556,
+   "signed": 850,
+   "active": 644,
+   "inactive": 206,
+   "unmapped": 706
+  },
+  "q1": {
+   "uc": {
+    "n": 499,
+    "mean": 53.75,
+    "median": 36.0,
+    "p25": 20.0,
+    "p75": 63.5,
+    "p90": 105.2
+   },
+   "closed": {
+    "n": 432,
+    "mean": 96.31,
+    "median": 77.0,
+    "p25": 59.0,
+    "p75": 113.5,
+    "p90": 151.9
+   },
+   "pi": {
+    "n": 353,
+    "mean": 75.86,
+    "median": 56.0,
+    "p25": 38.0,
+    "p75": 85.0,
+    "p90": 130.0
+   },
+   "km_uc_signed": 77.0,
+   "km_closed_signed": 127.0
+  },
+  "q2": {
+   "active": 644,
+   "active_uc": 464,
+   "active_closed": 429,
+   "signed": 850,
+   "signed_uc": 497,
+   "signed_closed": 430
+  },
+  "q3": [
+   {
+    "month": "2024-01",
+    "new_signed_start": 0,
+    "new_all_created": 0,
+    "uc": 0,
+    "closed": 0
+   },
+   {
+    "month": "2024-02",
+    "new_signed_start": 4,
+    "new_all_created": 0,
+    "uc": 0,
+    "closed": 0
+   },
+   {
+    "month": "2024-03",
+    "new_signed_start": 2,
+    "new_all_created": 6,
+    "uc": 2,
+    "closed": 0
+   },
+   {
+    "month": "2024-04",
+    "new_signed_start": 10,
+    "new_all_created": 10,
+    "uc": 6,
+    "closed": 0
+   },
+   {
+    "month": "2024-05",
+    "new_signed_start": 3,
+    "new_all_created": 3,
+    "uc": 6,
+    "closed": 0
+   },
+   {
+    "month": "2024-06",
+    "new_signed_start": 6,
+    "new_all_created": 6,
+    "uc": 5,
+    "closed": 0
+   },
+   {
+    "month": "2024-07",
+    "new_signed_start": 12,
+    "new_all_created": 11,
+    "uc": 4,
+    "closed": 0
+   },
+   {
+    "month": "2024-08",
+    "new_signed_start": 17,
+    "new_all_created": 18,
+    "uc": 9,
+    "closed": 0
+   },
+   {
+    "month": "2024-09",
+    "new_signed_start": 11,
+    "new_all_created": 10,
+    "uc": 11,
+    "closed": 6
+   },
+   {
+    "month": "2024-10",
+    "new_signed_start": 11,
+    "new_all_created": 11,
+    "uc": 2,
+    "closed": 12
+   },
+   {
+    "month": "2024-11",
+    "new_signed_start": 4,
+    "new_all_created": 5,
+    "uc": 4,
+    "closed": 5
+   },
+   {
+    "month": "2024-12",
+    "new_signed_start": 8,
+    "new_all_created": 8,
+    "uc": 5,
+    "closed": 4
+   },
+   {
+    "month": "2025-01",
+    "new_signed_start": 12,
+    "new_all_created": 11,
+    "uc": 7,
+    "closed": 4
+   },
+   {
+    "month": "2025-02",
+    "new_signed_start": 4,
+    "new_all_created": 6,
+    "uc": 4,
+    "closed": 5
+   },
+   {
+    "month": "2025-03",
+    "new_signed_start": 12,
+    "new_all_created": 13,
+    "uc": 5,
+    "closed": 7
+   },
+   {
+    "month": "2025-04",
+    "new_signed_start": 11,
+    "new_all_created": 9,
+    "uc": 8,
+    "closed": 3
+   },
+   {
+    "month": "2025-05",
+    "new_signed_start": 15,
+    "new_all_created": 14,
+    "uc": 6,
+    "closed": 9
+   },
+   {
+    "month": "2025-06",
+    "new_signed_start": 16,
+    "new_all_created": 16,
+    "uc": 10,
+    "closed": 8
+   },
+   {
+    "month": "2025-07",
+    "new_signed_start": 25,
+    "new_all_created": 26,
+    "uc": 4,
+    "closed": 9
+   },
+   {
+    "month": "2025-08",
+    "new_signed_start": 27,
+    "new_all_created": 34,
+    "uc": 10,
+    "closed": 8
+   },
+   {
+    "month": "2025-09",
+    "new_signed_start": 41,
+    "new_all_created": 38,
+    "uc": 7,
+    "closed": 12
+   },
+   {
+    "month": "2025-10",
+    "new_signed_start": 36,
+    "new_all_created": 35,
+    "uc": 17,
+    "closed": 20
+   },
+   {
+    "month": "2025-11",
+    "new_signed_start": 19,
+    "new_all_created": 17,
+    "uc": 8,
+    "closed": 4
+   },
+   {
+    "month": "2025-12",
+    "new_signed_start": 20,
+    "new_all_created": 25,
+    "uc": 11,
+    "closed": 32
+   },
+   {
+    "month": "2026-01",
+    "new_signed_start": 31,
+    "new_all_created": 36,
+    "uc": 13,
+    "closed": 13
+   },
+   {
+    "month": "2026-02",
+    "new_signed_start": 23,
+    "new_all_created": 22,
+    "uc": 13,
+    "closed": 9
+   },
+   {
+    "month": "2026-03",
+    "new_signed_start": 32,
+    "new_all_created": 35,
+    "uc": 22,
+    "closed": 14
+   },
+   {
+    "month": "2026-04",
+    "new_signed_start": 28,
+    "new_all_created": 31,
+    "uc": 29,
+    "closed": 22
+   },
+   {
+    "month": "2026-05",
+    "new_signed_start": 34,
+    "new_all_created": 42,
+    "uc": 21,
+    "closed": 26
+   },
+   {
+    "month": "2026-06",
+    "new_signed_start": 65,
+    "new_all_created": 165,
+    "uc": 17,
+    "closed": 25
+   },
+   {
+    "month": "2026-07",
+    "new_signed_start": 92,
+    "new_all_created": 196,
+    "uc": 44,
+    "closed": 14
+   },
+   {
+    "month": "2026-08",
+    "new_signed_start": 82,
+    "new_all_created": 264,
+    "uc": 55,
+    "closed": 43
+   },
+   {
+    "month": "2026-09",
+    "new_signed_start": 76,
+    "new_all_created": 233,
+    "uc": 59,
+    "closed": 44
+   },
+   {
+    "month": "2026-10",
+    "new_signed_start": 52,
+    "new_all_created": 164,
+    "uc": 58,
+    "closed": 64
+   },
+   {
+    "month": "2026-11",
+    "new_signed_start": 9,
+    "new_all_created": 36,
+    "uc": 17,
+    "closed": 10
+   }
+  ]
+ },
+ "quality": [
+  {
+   "id": "unmapped_status",
+   "area": "Jira",
+   "severity": "serious",
+   "title": "45% of Jira issues sit in statuses outside Carson's lists",
+   "metric": "706 of 1,556",
+   "detail": "New Clients, Onboarding Completed and Services Declined are pre-sale stages of the New Client Experience (May 27, 2026). Almost none of them have a won Pipedrive deal.",
+   "impact": "Raw Jira issue counts after May 2026 include prospects. Count clients with Carson's signed-up list.",
+   "keys": []
+  },
+  {
+   "id": "missing_due",
+   "area": "Jira",
+   "severity": "warning",
+   "title": "Signed-up clients without an issue_due_date",
+   "metric": "126 of 850",
+   "detail": "Their effective start falls back to issue creation. Since May 2026 that date comes before the sale, about 5 days ahead of the onboarding call.",
+   "impact": "Slightly lengthens days-to-milestone for recent clients; fill the due date at onboarding.",
+   "keys": []
+  },
+  {
+   "id": "etl_days_due_only",
+   "area": "Jira",
+   "severity": "warning",
+   "title": "Existing days_to_* fields count from the due date only",
+   "metric": "51 UC dates have no ETL day count",
+   "detail": "days_to_under_contract = first UC \u2212 issue_due_date, and it is blank when the due date is missing. Carson's rule is COALESCE(due, created). This dashboard recomputes days with COALESCE.",
+   "impact": "Reports that use the ETL fields drop these clients and differ slightly from Carson's definition.",
+   "keys": []
+  },
+  {
+   "id": "closed_without_uc",
+   "area": "Jira",
+   "severity": "serious",
+   "title": "Closed clients with no first Under Contract date",
+   "metric": "61",
+   "detail": "The Jira changelog the ETL reads does not always contain the earliest transitions, so first_* dates are 'first seen', not guaranteed to be the first historical event.",
+   "impact": "UC counts and UC rates are understated, mostly for older clients.",
+   "keys": []
+  },
+  {
+   "id": "closed_status_no_date",
+   "area": "Jira",
+   "severity": "warning",
+   "title": "Closed or post-close status but no first CLOSED date",
+   "metric": "31",
+   "detail": "The status says the client closed but no CLOSED transition was captured.",
+   "impact": "CLOSED counts by date are understated, mostly for 2024\u201325 clients.",
+   "keys": []
+  },
+  {
+   "id": "uc_after_close",
+   "area": "Jira",
+   "severity": "good",
+   "title": "First UC dated after first CLOSED",
+   "metric": "0",
+   "detail": "Milestone order check.",
+   "impact": "Usually a re-contract after an earlier close.",
+   "keys": []
+  },
+  {
+   "id": "no_history",
+   "area": "Jira",
+   "severity": "info",
+   "title": "Issues with no status history in the extract",
+   "metric": "115",
+   "detail": "Mostly brand-new 'New Clients' issues that have not moved yet.",
+   "impact": "None for signed-up metrics.",
+   "keys": []
+  },
+  {
+   "id": "jira_unlinked",
+   "area": "Links",
+   "severity": "warning",
+   "title": "Jira issues without a matching Pipedrive deal",
+   "metric": "31 of 1,556",
+   "detail": "Blank PD_Deal_ID (mostly 2024 refunds) or a deal ID missing from the Pipedrive extract (merged or deleted deals).",
+   "impact": "These issues drop out whenever a Pipedrive-attribute filter is on.",
+   "keys": []
+  },
+  {
+   "id": "key_on_two_deals",
+   "area": "Links",
+   "severity": "info",
+   "title": "Jira keys named by more than one Pipedrive deal",
+   "metric": "6 keys",
+   "detail": "Repeat deals for the same person point at one Jira issue. Joins go from the Jira side (PD_Deal_ID), which never repeats.",
+   "impact": "No double counting in this dashboard.",
+   "keys": []
+  },
+  {
+   "id": "won_no_jira",
+   "area": "Links",
+   "severity": "warning",
+   "title": "Won deals with no Jira issue",
+   "metric": "53 of 871",
+   "detail": "0 were won in the last 14 days, so the Jira issue may not exist yet. The rest predate the current Jira project or were never linked.",
+   "impact": "Won \u2192 Jira handoff looks slightly incomplete.",
+   "keys": []
+  },
+  {
+   "id": "noshow_moved",
+   "area": "Pipedrive",
+   "severity": "critical",
+   "title": "Booked calls moved from STR Search into the SDR Setter pipeline",
+   "metric": "1,387 Calendly-booked deals since Jun 2026",
+   "detail": "Since about June 2026, no-show or cancelled booked calls are moved into pipeline 6. 'No Show' lost reasons in STR Search fell from about 130 a month to single digits.",
+   "impact": "From June 2026, STR Search deal counts and no-show rates are understated and win rates per deal are inflated. Compare periods with care.",
+   "keys": []
+  },
+  {
+   "id": "product_coverage",
+   "area": "Pipedrive",
+   "severity": "warning",
+   "title": "Won deals without a package (Search Product Sold)",
+   "metric": "486 of 871",
+   "detail": "The field is a Pipedrive option ID. [203] = Complete and [202] = Core, verified against a labelled Supabase extract. Older wins are blank.",
+   "impact": "Package splits cover recent wins only.",
+   "keys": []
+  },
+  {
+   "id": "payment_labels",
+   "area": "Pipedrive",
+   "severity": "serious",
+   "title": "Payment Type has no text labels anywhere in the extracts",
+   "metric": "693 won deals blank",
+   "detail": "Only option IDs [214] and [215] exist. [214] is 93% of coded wins, consistent with 'most clients choose Split Pay', but no source confirms the labels.",
+   "impact": "Payment splits are shown as 'Likely Split Pay [214]' and 'Likely Full Pay [215]'. Confirm in Pipedrive settings.",
+   "keys": []
+  },
+  {
+   "id": "qualified_defs",
+   "area": "Pipedrive",
+   "severity": "warning",
+   "title": "Three different 'qualified' definitions",
+   "metric": "Stage-based 22% vs column 91%",
+   "detail": "The Definitions sheet uses current stage. The 'qualified' column and FCT use 'not lost for Not Qualified / AirVal / Partner Opportunity'.",
+   "impact": "This dashboard uses the 'not disqualified' column and labels it that way.",
+   "keys": []
+  },
+  {
+   "id": "source_swap",
+   "area": "Pipedrive",
+   "severity": "info",
+   "title": "first_pd_source and latest_pd_source are swapped",
+   "metric": "ETL logic",
+   "detail": "The archived script sorts the wrong way round. PD_Source itself is unaffected.",
+   "impact": "Do not use first_/latest_pd_source.",
+   "keys": []
+  },
+  {
+   "id": "excel_flags",
+   "area": "Pipedrive",
+   "severity": "info",
+   "title": "0/1 flags exported as dates (No_Show, duplicate_deal)",
+   "metric": "Sheet formatting",
+   "detail": "Cells show 00:00 or 1900-01-01. The build decodes them back to 0/1.",
+   "impact": "Fix the column format in the Google Sheet.",
+   "keys": []
+  },
+  {
+   "id": "utc_dates",
+   "area": "Jira",
+   "severity": "info",
+   "title": "Milestone dates are UTC calendar dates",
+   "metric": "ETL logic",
+   "detail": "Late-evening Eastern transitions land on the next day.",
+   "impact": "At most \u00b11 day on day counts.",
+   "keys": []
+  },
+  {
+   "id": "survivorship",
+   "area": "Jira",
+   "severity": "warning",
+   "title": "Early Jira cohorts only contain issues that still exist",
+   "metric": "\u2248288 key numbers absent",
+   "detail": "About half of keys 1\u2013299 (Mar 2024\u2013Jun 2025) are deleted or moved.",
+   "impact": "2024 to mid-2025 volumes and rates describe the surviving issues only.",
+   "keys": []
+  }
+ ],
+ "recon": {
+  "monthly": [
+   {
+    "month": "2024-02",
+    "fct_deals": 27,
+    "dim_deals": 27,
+    "fct_won": 4,
+    "dim_won": 4,
+    "fct_jira": 0,
+    "dim_jira": 0
+   },
+   {
+    "month": "2024-03",
+    "fct_deals": 48,
+    "dim_deals": 48,
+    "fct_won": 2,
+    "dim_won": 2,
+    "fct_jira": 6,
+    "dim_jira": 6
+   },
+   {
+    "month": "2024-04",
+    "fct_deals": 59,
+    "dim_deals": 59,
+    "fct_won": 11,
+    "dim_won": 11,
+    "fct_jira": 10,
+    "dim_jira": 10
+   },
+   {
+    "month": "2024-05",
+    "fct_deals": 56,
+    "dim_deals": 56,
+    "fct_won": 2,
+    "dim_won": 2,
+    "fct_jira": 3,
+    "dim_jira": 3
+   },
+   {
+    "month": "2024-06",
+    "fct_deals": 80,
+    "dim_deals": 80,
+    "fct_won": 8,
+    "dim_won": 8,
+    "fct_jira": 6,
+    "dim_jira": 6
+   },
+   {
+    "month": "2024-07",
+    "fct_deals": 98,
+    "dim_deals": 98,
+    "fct_won": 13,
+    "dim_won": 13,
+    "fct_jira": 11,
+    "dim_jira": 11
+   },
+   {
+    "month": "2024-08",
+    "fct_deals": 56,
+    "dim_deals": 56,
+    "fct_won": 13,
+    "dim_won": 13,
+    "fct_jira": 18,
+    "dim_jira": 18
+   },
+   {
+    "month": "2024-09",
+    "fct_deals": 104,
+    "dim_deals": 104,
+    "fct_won": 13,
+    "dim_won": 13,
+    "fct_jira": 10,
+    "dim_jira": 10
+   },
+   {
+    "month": "2024-10",
+    "fct_deals": 100,
+    "dim_deals": 100,
+    "fct_won": 9,
+    "dim_won": 9,
+    "fct_jira": 11,
+    "dim_jira": 11
+   },
+   {
+    "month": "2024-11",
+    "fct_deals": 89,
+    "dim_deals": 89,
+    "fct_won": 6,
+    "dim_won": 6,
+    "fct_jira": 5,
+    "dim_jira": 5
+   },
+   {
+    "month": "2024-12",
+    "fct_deals": 80,
+    "dim_deals": 80,
+    "fct_won": 7,
+    "dim_won": 7,
+    "fct_jira": 8,
+    "dim_jira": 8
+   },
+   {
+    "month": "2025-01",
+    "fct_deals": 120,
+    "dim_deals": 120,
+    "fct_won": 12,
+    "dim_won": 12,
+    "fct_jira": 11,
+    "dim_jira": 11
+   },
+   {
+    "month": "2025-02",
+    "fct_deals": 111,
+    "dim_deals": 111,
+    "fct_won": 6,
+    "dim_won": 6,
+    "fct_jira": 6,
+    "dim_jira": 6
+   },
+   {
+    "month": "2025-03",
+    "fct_deals": 105,
+    "dim_deals": 105,
+    "fct_won": 12,
+    "dim_won": 12,
+    "fct_jira": 13,
+    "dim_jira": 13
+   },
+   {
+    "month": "2025-04",
+    "fct_deals": 127,
+    "dim_deals": 127,
+    "fct_won": 11,
+    "dim_won": 11,
+    "fct_jira": 9,
+    "dim_jira": 9
+   },
+   {
+    "month": "2025-05",
+    "fct_deals": 142,
+    "dim_deals": 142,
+    "fct_won": 16,
+    "dim_won": 16,
+    "fct_jira": 14,
+    "dim_jira": 14
+   },
+   {
+    "month": "2025-06",
+    "fct_deals": 138,
+    "dim_deals": 138,
+    "fct_won": 16,
+    "dim_won": 16,
+    "fct_jira": 16,
+    "dim_jira": 16
+   },
+   {
+    "month": "2025-07",
+    "fct_deals": 209,
+    "dim_deals": 209,
+    "fct_won": 24,
+    "dim_won": 24,
+    "fct_jira": 26,
+    "dim_jira": 26
+   },
+   {
+    "month": "2025-08",
+    "fct_deals": 230,
+    "dim_deals": 230,
+    "fct_won": 38,
+    "dim_won": 38,
+    "fct_jira": 34,
+    "dim_jira": 34
+   },
+   {
+    "month": "2025-09",
+    "fct_deals": 235,
+    "dim_deals": 235,
+    "fct_won": 37,
+    "dim_won": 37,
+    "fct_jira": 47,
+    "dim_jira": 38
+   },
+   {
+    "month": "2025-10",
+    "fct_deals": 299,
+    "dim_deals": 299,
+    "fct_won": 38,
+    "dim_won": 38,
+    "fct_jira": 35,
+    "dim_jira": 35
+   },
+   {
+    "month": "2025-11",
+    "fct_deals": 173,
+    "dim_deals": 173,
+    "fct_won": 17,
+    "dim_won": 17,
+    "fct_jira": 17,
+    "dim_jira": 17
+   },
+   {
+    "month": "2025-12",
+    "fct_deals": 214,
+    "dim_deals": 214,
+    "fct_won": 42,
+    "dim_won": 44,
+    "fct_jira": 25,
+    "dim_jira": 25
+   },
+   {
+    "month": "2026-01",
+    "fct_deals": 289,
+    "dim_deals": 289,
+    "fct_won": 32,
+    "dim_won": 30,
+    "fct_jira": 36,
+    "dim_jira": 36
+   },
+   {
+    "month": "2026-02",
+    "fct_deals": 272,
+    "dim_deals": 272,
+    "fct_won": 20,
+    "dim_won": 20,
+    "fct_jira": 22,
+    "dim_jira": 22
+   },
+   {
+    "month": "2026-03",
+    "fct_deals": 295,
+    "dim_deals": 295,
+    "fct_won": 36,
+    "dim_won": 36,
+    "fct_jira": 36,
+    "dim_jira": 35
+   },
+   {
+    "month": "2026-04",
+    "fct_deals": 328,
+    "dim_deals": 328,
+    "fct_won": 31,
+    "dim_won": 31,
+    "fct_jira": 31,
+    "dim_jira": 31
+   },
+   {
+    "month": "2026-05",
+    "fct_deals": 629,
+    "dim_deals": 629,
+    "fct_won": 25,
+    "dim_won": 25,
+    "fct_jira": 42,
+    "dim_jira": 42
+   },
+   {
+    "month": "2026-06",
+    "fct_deals": 505,
+    "dim_deals": 504,
+    "fct_won": 56,
+    "dim_won": 56,
+    "fct_jira": 165,
+    "dim_jira": 165
+   },
+   {
+    "month": "2026-07",
+    "fct_deals": 657,
+    "dim_deals": 658,
+    "fct_won": 79,
+    "dim_won": 79,
+    "fct_jira": 196,
+    "dim_jira": 196
+   },
+   {
+    "month": "2026-08",
+    "fct_deals": 656,
+    "dim_deals": 656,
+    "fct_won": 76,
+    "dim_won": 80,
+    "fct_jira": 264,
+    "dim_jira": 264
+   },
+   {
+    "month": "2026-09",
+    "fct_deals": 487,
+    "dim_deals": 485,
+    "fct_won": 82,
+    "dim_won": 81,
+    "fct_jira": 234,
+    "dim_jira": 233
+   },
+   {
+    "month": "2026-10",
+    "fct_deals": 456,
+    "dim_deals": 441,
+    "fct_won": 69,
+    "dim_won": 66,
+    "fct_jira": 165,
+    "dim_jira": 164
+   },
+   {
+    "month": "2026-11",
+    "fct_deals": 164,
+    "dim_deals": 171,
+    "fct_won": 7,
+    "dim_won": 8,
+    "fct_jira": 36,
+    "dim_jira": 36
+   }
+  ],
+  "verdicts": [
+   {
+    "metric": "PD_Deals",
+    "verdict": "Trust",
+    "sev": "good",
+    "note": "Pipeline 3, Keep = 1, by created date (ET). Matches the DIM every month to May 2026. Small Oct\u2013Nov gaps come from snapshot timing and deals moved to pipeline 6."
+   },
+   {
+    "metric": "PD_Won_Deals (by won date)",
+    "verdict": "Trust",
+    "sev": "good",
+    "note": "Matches within \u00b11. Won dates use the UTC calendar date."
+   },
+   {
+    "metric": "PD_Qualified_Deals",
+    "verdict": "Rename",
+    "sev": "warning",
+    "note": "Counts 'not lost for Not Qualified / AirVal'. That is not the stage rule in the Definitions sheet."
+   },
+   {
+    "metric": "PD_No_Shows",
+    "verdict": "Caution",
+    "sev": "serious",
+    "note": "Understated from June 2026, because no-shows are moved into the SDR Setter pipeline."
+   },
+   {
+    "metric": "PD_Avg_Days_Won",
+    "verdict": "Caution",
+    "sev": "warning",
+    "note": "Daily averages must be deal-weighted (53.8 days). A plain mean of daily values gives 62.6. The median is 21."
+   },
+   {
+    "metric": "Jira_Clients",
+    "verdict": "Caution",
+    "sev": "serious",
+    "note": "Counts every Jira issue, including pre-sale prospects since May 2026, plus 10 brokerage issues not in the DIM."
+   },
+   {
+    "metric": "Jira_Won",
+    "verdict": "Misleading name",
+    "sev": "critical",
+    "note": "Current status = CLOSED (property closed), not won or signed clients."
+   },
+   {
+    "metric": "Jira_Active",
+    "verdict": "Misleading name",
+    "sev": "critical",
+    "note": "A residual (everything not refunded or closed, 1,230). It is not Carson's active definition (644)."
+   },
+   {
+    "metric": "Jira_Refunded",
+    "verdict": "Trust",
+    "sev": "good",
+    "note": "Current status = Refunded (92)."
+   }
+  ]
+ },
+ "extras": {
+  "sdr_moves": [
+   {
+    "month": "2025-06",
+    "p6_calendly_booked": 1,
+    "p3_no_show_lost": 20,
+    "p3_created": 141
+   },
+   {
+    "month": "2025-07",
+    "p6_calendly_booked": 0,
+    "p3_no_show_lost": 39,
+    "p3_created": 212
+   },
+   {
+    "month": "2025-08",
+    "p6_calendly_booked": 0,
+    "p3_no_show_lost": 29,
+    "p3_created": 235
+   },
+   {
+    "month": "2025-09",
+    "p6_calendly_booked": 0,
+    "p3_no_show_lost": 31,
+    "p3_created": 237
+   },
+   {
+    "month": "2025-10",
+    "p6_calendly_booked": 2,
+    "p3_no_show_lost": 39,
+    "p3_created": 302
+   },
+   {
+    "month": "2025-11",
+    "p6_calendly_booked": 1,
+    "p3_no_show_lost": 27,
+    "p3_created": 176
+   },
+   {
+    "month": "2025-12",
+    "p6_calendly_booked": 3,
+    "p3_no_show_lost": 38,
+    "p3_created": 220
+   },
+   {
+    "month": "2026-01",
+    "p6_calendly_booked": 2,
+    "p3_no_show_lost": 70,
+    "p3_created": 297
+   },
+   {
+    "month": "2026-02",
+    "p6_calendly_booked": 4,
+    "p3_no_show_lost": 56,
+    "p3_created": 272
+   },
+   {
+    "month": "2026-03",
+    "p6_calendly_booked": 1,
+    "p3_no_show_lost": 84,
+    "p3_created": 297
+   },
+   {
+    "month": "2026-04",
+    "p6_calendly_booked": 5,
+    "p3_no_show_lost": 84,
+    "p3_created": 337
+   },
+   {
+    "month": "2026-05",
+    "p6_calendly_booked": 15,
+    "p3_no_show_lost": 132,
+    "p3_created": 634
+   },
+   {
+    "month": "2026-06",
+    "p6_calendly_booked": 177,
+    "p3_no_show_lost": 7,
+    "p3_created": 507
+   },
+   {
+    "month": "2026-07",
+    "p6_calendly_booked": 303,
+    "p3_no_show_lost": 2,
+    "p3_created": 661
+   },
+   {
+    "month": "2026-08",
+    "p6_calendly_booked": 336,
+    "p3_no_show_lost": 2,
+    "p3_created": 656
+   },
+   {
+    "month": "2026-09",
+    "p6_calendly_booked": 310,
+    "p3_no_show_lost": 3,
+    "p3_created": 488
+   },
+   {
+    "month": "2026-10",
+    "p6_calendly_booked": 226,
+    "p3_no_show_lost": 16,
+    "p3_created": 441
+   },
+   {
+    "month": "2026-11",
+    "p6_calendly_booked": 35,
+    "p3_no_show_lost": 23,
+    "p3_created": 172
+   }
+  ],
+  "p6_total": 15429
+ }
+}
