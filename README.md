@@ -1,3 +1,20 @@
+# STRSearch Business Data Explorer
+
+How STRSearch's sales (Pipedrive) and client acquisition (Jira) data fit together. Two reporting versions are published (see [`VERSIONS.md`](VERSIONS.md)):
+- **16 Nov 2026 · Updated reporting (default):** `docs/2026-11-16/`, built from the Supabase reporting layer (`16 Nov UpdatedReports`) with `pipeline/` (`foundation.py` loads, rebuilds `daily_client_activity` and `client_cohort_performance`, and reconciles; `build.py` writes the data file, `--anonymize` for this public build).
+- **12 Nov 2026 · Original reporting (archived, frozen):** `docs/2026-11-12/`, rebuilt only by `versions/2026-11-12/pipeline/`.
+
+Live: https://ifrahamstr.github.io/STRSearchBusinessDataExplorer-Public/ (opens the default; /2026-11-16/ and /2026-11-12/ are stable version links). Data for other AI assistants: `docs/2026-11-16/data/summary.json` and `docs/2026-11-12/data/summary.json`, plus [`LLM_CONTEXT.md`](LLM_CONTEXT.md).
+
+## 16 Nov 2026 at a glance
+- Pipedrive: 7,662 in-scope deals, 876 won engagements (829 with a Jira match, 825 confirmed starts, 51 Pipedrive-fallback starts).
+- Jira: 1,591 issues; 843 signed-up = 648 Active + 195 Inactive; 123 hunting; 347 pre-sale and 401 declined prospects.
+- Key question 1 (confirmed starts): median 37.5 days to Under Contract (mean 56.17), 73 to CLOSED (mean 92.82); Kaplan–Meier 76 / 117 days.
+- Key question 2 (Jira issues): 464 of 648 Active clients reached UC, 438 CLOSED.
+- Reconciliation: 36/36 checks against the export and the SQL reference.
+
+## The archived 12 Nov 2026 version (original README below, unchanged)
+
 # STRSearch Business Data Explorer (public, anonymized)
 
 An interactive dashboard showing how STRSearch's **sales (Pipedrive)** and **client acquisition (Jira)** data fit together. It covers the lifecycle, trends, milestone timing, conversion and data quality, and it answers three operating questions about Jira client milestones.

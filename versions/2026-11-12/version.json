@@ -1,0 +1,15 @@
+{
+  "id": "2026-11-12",
+  "label": "12 Nov 2026",
+  "title": "Original reporting",
+  "status": "archived",
+  "frozen": true,
+  "data_asof": "2026-11-11",
+  "sources": "STRDataWorks/12 Nov 26 Reports/DataDrive/Reporting Tables (DIM - JIRA Client Data, DIM - Pipedrive_API, FCT - Daily_Reporting_STR_Search)",
+  "pipeline": "versions/2026-11-12/pipeline/build.py",
+  "rebuild": "python versions/2026-11-12/pipeline/build.py --cache   # writes versions/2026-11-12/rebuild/; compare with docs/2026-11-12/data (only meta.built_at differs)",
+  "outputs": {
+    "docs/2026-11-12/data/explorer-data.js": "f04e9d7dc1841e23a2008f651dca18d0c18bd927428bf0895c129c08b31ec817"
+  },
+  "note": "Frozen on 2026-11-16 when the 16 Nov 2026 reporting layer became the default. Never overwrite these outputs."
+}

@@ -1,0 +1,13 @@
+{
+  "id": "2026-11-16",
+  "label": "16 Nov 2026",
+  "title": "Updated reporting",
+  "status": "current",
+  "frozen": false,
+  "data_asof": "2026-11-16",
+  "sources": "STRDataWorks/16 Nov UpdatedReports (New SQL Views for Reporting.xlsx + SQL reference)",
+  "pipeline": "pipeline/build.py",
+  "rebuild": "python pipeline/compare_versions.py --cache && python pipeline/build.py --cache",
+  "outputs": {},
+  "note": "Freeze (set frozen: true and record output hashes) before a newer reporting package becomes the default."
+}

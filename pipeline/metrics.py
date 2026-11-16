@@ -1,13 +1,24 @@
-"""Headline metrics computed in Python. The dashboard recomputes the same numbers in the browser;
-SX.parity() compares the two (unfiltered view) so a refresh cannot silently drift."""
+"""Headline metrics for the 16 Nov 2026 version, computed once in Python.
+
+The Explorer recomputes the same numbers in the browser and SX.parity() compares them (unfiltered view); the
+Executive Report imports this module, so both sites publish identical shared headline figures.
+
+Populations (never mixed):
+- Jira-issue grain: client counts by status flag (signed / active / inactive / hunting), attainment (Q2).
+- Engagement grain with a confirmed Jira start (client_cohort_performance): acquisition durations (Q1),
+  Kaplan-Meier, matured cohorts.
+- Event grain by event date (daily_client_activity): monthly throughput, net client change (Q3).
+"""
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
+import definitions as D
 
-def _stats(s: pd.Series) -> dict:
-    s = s.dropna()
+
+def stats(s: pd.Series) -> dict:
+    s = pd.to_numeric(s, errors="coerce").dropna()
     s = s[s >= 0]
     if s.empty:
         return {"n": 0}
@@ -15,59 +26,71 @@ def _stats(s: pd.Series) -> dict:
             "p25": float(s.quantile(0.25)), "p75": float(s.quantile(0.75)), "p90": round(float(s.quantile(0.9)), 2)}
 
 
-def km_median(t: pd.Series, e: pd.Series) -> float | None:
-    """Kaplan-Meier: day at which the cumulative share reaching the milestone first hits 50%."""
-    df = pd.DataFrame({"t": t, "e": e}).dropna()
-    df = df[df.t >= 0].sort_values("t")
-    at_risk, surv = len(df), 1.0
-    for tt, g in df.groupby("t", sort=True):
-        d = int(g.e.sum())
-        if d and at_risk:
-            surv *= 1 - d / at_risk
-            if surv <= 0.5:
-                return float(tt)
-        at_risk -= len(g)
-    return None
+def km_curve(t, e) -> pd.DataFrame:
+    """Kaplan-Meier product-limit estimate of the cumulative share reaching the milestone by day t."""
+    df = pd.DataFrame({"t": np.asarray(t, float), "e": np.asarray(e, bool)}).dropna()
+    df = df[df.t >= 0]
+    g = df.groupby("t").e.agg(["size", "sum"]).sort_index()
+    at_risk = len(df) - g["size"].cumsum().shift(fill_value=0)
+    surv = (1 - g["sum"] / at_risk).cumprod()
+    return pd.DataFrame({"t": g.index.values, "cum": (1 - surv).values, "at_risk": at_risk.values, "events": g["sum"].values})
 
 
-def expected(deals: pd.DataFrame, jira: pd.DataFrame, asof: pd.Timestamp) -> dict:
+def km_median(t, e) -> float | None:
+    k = km_curve(t, e)
+    hit = k[k.cum >= 0.5]
+    return float(hit.t.iloc[0]) if len(hit) else None
+
+
+def clock(cohort: pd.DataFrame, milestone: str) -> tuple[np.ndarray, np.ndarray]:
+    """Time-to-event inputs on the confirmed-start population: event time when the milestone is recorded,
+    otherwise days on the clock at the data date (refunded and paused clients stay in, as not yet reached)."""
+    days = cohort["days_to_uc"] if milestone == "uc" else cohort["days_to_close"]
+    hit = (cohort["uc"] if milestone == "uc" else cohort["closed"]).notna()
+    t = np.where(hit, days, cohort["days_since_start"])
+    return t, hit.values
+
+
+def expected(deals: pd.DataFrame, jira: pd.DataFrame, eng: pd.DataFrame, cohort: pd.DataFrame,
+             monthly: pd.DataFrame, cohort_by_month: pd.DataFrame, asof: pd.Timestamp) -> dict:
     sc = deals[deals.in_scope]
     won = sc[sc.status == "won"]
-    signed = jira[jira.carson_signed]
-    act = jira[jira.carson_active]
-    # time-to-event for signed-up clients (censored at as-of)
-    t_uc = np.where(signed.uc.notna(), signed.days_uc, (asof - signed.start).dt.days)
-    t_cl = np.where(signed.closed.notna(), signed.days_closed, (asof - signed.start).dt.days)
-    months = pd.period_range("2024-01", asof.to_period("M"), freq="M")
-    def by_month(s):
-        return s.dropna().dt.to_period("M").value_counts()
-    ns, na, uc, cl = by_month(signed.start), by_month(jira.created), by_month(jira.uc), by_month(jira.closed)
-    q3 = [{"month": str(m), "new_signed_start": int(ns.get(m, 0)), "new_all_created": int(na.get(m, 0)),
-           "uc": int(uc.get(m, 0)), "closed": int(cl.get(m, 0))} for m in months]
+    signed, act = jira[jira.signed], jira[jira.active]
+    t_uc, e_uc = clock(cohort, "uc")
+    t_cl, e_cl = clock(cohort, "closed")
+    intake = jira.assign(month=jira.created.dt.strftime("%Y-%m")).groupby(["month", "class"]).size().unstack(fill_value=0)
     return {
-        "deals": {"in_scope": int(len(sc)), "won": int(len(won)), "lost": int((sc.status == "lost").sum()),
+        "deals": {"all": int(len(deals)), "in_scope": int(len(sc)), "won": int(len(won)), "lost": int((sc.status == "lost").sum()),
                   "open": int((sc.status == "open").sum()), "won_value": float(won.value.sum()),
-                  "median_days_to_win": float(won.days_to_win.median())},
+                  "median_days_to_win": float(won.days_to_win.median()), "won_all": int((deals.status == "won").sum())},
         "jira": {"total": int(len(jira)), "signed": int(len(signed)), "active": int(len(act)),
-                 "inactive": int(jira.carson_inactive.sum()), "unmapped": int((~jira.carson_signed).sum())},
-        "q1": {"uc": _stats(jira.days_uc), "closed": _stats(jira.days_closed), "pi": _stats(jira.days_pi),
-               "km_uc_signed": km_median(pd.Series(t_uc), pd.Series(signed.uc.notna().values)),
-               "km_closed_signed": km_median(pd.Series(t_cl), pd.Series(signed.closed.notna().values))},
-        "q2": {"active": int(len(act)), "active_uc": int(act.uc.notna().sum()), "active_closed": int(act.closed.notna().sum()),
-               "signed": int(len(signed)), "signed_uc": int(signed.uc.notna().sum()), "signed_closed": int(signed.closed.notna().sum())},
-        "q3": q3,
+                 "inactive": int(jira.inactive.sum()), "hunting": int(jira.hunting.sum()),
+                 "presale": int((jira["class"] == "Pre-sale").sum()), "declined": int((jira["class"] == "Services declined").sum()),
+                 "refunded": int(jira.refunded.sum()), "henry": int(jira.henry.sum()),
+                 "signed_oop_known": int(signed.oop_known.sum()), "signed_no_start": int(signed.start.isna().sum())},
+        "engagements": {"total": int(len(eng)), "has_jira": int(eng.has_jira.sum()), "no_jira": int((~eng.has_jira).sum()),
+                        "confirmed_starts": int(eng.confirmed_start.sum()), "fallback": int((eng.start_source == "Pipedrive Fallback").sum()),
+                        "repeat": int(eng.repeat_client.sum()), "anomalies": int(eng.anomaly.sum()),
+                        "key_mismatch": int(eng.key_mismatch.sum()), "refunded": int(eng.refunded.fillna(False).astype(bool).sum()),
+                        "hunting_official": int((eng.hunting.fillna(False).astype(bool) & eng.has_jira).sum()),
+                        "jira_not_signed": int((eng.has_jira & ~eng.signed.fillna(False).astype(bool)).sum()),
+                        "scheduled_closings": int(eng.closed_scheduled.sum())},
+        "q1": {"population": "confirmed Jira starts (client_cohort_performance)", "n": int(len(cohort)),
+               "uc": stats(cohort.days_to_uc), "closed": stats(cohort.days_to_close),
+               "uc_to_close": stats(cohort.days_uc_to_close),
+               "km_uc": km_median(t_uc, e_uc), "km_closed": km_median(t_cl, e_cl),
+               "km_events": {"uc": int(e_uc.sum()), "closed": int(e_cl.sum())},
+               "negative_days_to_uc": int((cohort.days_to_uc < 0).sum())},
+        "q2": {"population": "Jira issues (reporting-layer flags)", "active": int(len(act)), "active_uc": int(act.uc.notna().sum()),
+               "active_closed": int(act.closed.notna().sum()), "active_closed_scheduled": int(act.closed_scheduled.sum()),
+               "signed": int(len(signed)), "signed_uc": int(signed.uc.notna().sum()), "signed_closed": int(signed.closed.notna().sum()),
+               "hunting": int(jira.hunting.sum())},
+        "q3": [{"month": r.month, "won": int(r.clients_won), "started": int(r.clients_started), "uc": int(r.clients_went_uc),
+                "pi": int(r.clients_passed_inspection), "closed": int(r.properties_closed), "refunded": int(r.clients_refunded),
+                "net_client_change": int(r.net_client_change),
+                "replacement_rate": None if pd.isna(r.replacement_rate) else round(float(r.replacement_rate), 4),
+                "cumulative_net_change": int(r.cumulative_net_change), "days": int(r.days)} for r in monthly.itertuples()],
+        "intake": [{"month": m, **{k: int(row.get(k, 0)) for k in ["Signed client", "Pre-sale", "Services declined", "Other"]},
+                    "all": int(row.sum())} for m, row in intake.iterrows()],
+        "cohort": cohort_by_month.to_dict("records"),
     }
-
-
-def extras(deals: pd.DataFrame, jira: pd.DataFrame, frames: dict, asof: pd.Timestamp) -> dict:
-    """Aggregates that need columns we do not export at record level."""
-    raw = frames["deals"]
-    created = pd.to_datetime(raw["Deal_Created_At_EST"], errors="coerce", utc=True, format="mixed").dt.tz_convert("America/New_York")
-    mon = created.dt.strftime("%Y-%m")
-    p6_booked = raw[(raw.pipeline_id == 6) & raw["Calendly_ID"].notna()]
-    p3_noshow = raw[(raw.pipeline_id == 3) & (raw["Lost reason"] == "No Show")]
-    months = [str(m) for m in pd.period_range("2025-06", asof.to_period("M"), freq="M")]
-    sdr = [{"month": m, "p6_calendly_booked": int((mon[p6_booked.index] == m).sum()),
-            "p3_no_show_lost": int((mon[p3_noshow.index] == m).sum()),
-            "p3_created": int(((mon == m) & (raw.pipeline_id == 3)).sum())} for m in months]
-    return {"sdr_moves": sdr, "p6_total": int((raw.pipeline_id == 6).sum())}

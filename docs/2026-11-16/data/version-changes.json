@@ -1,0 +1,244 @@
+{
+ "versions": {
+  "old": {
+   "id": "2026-11-12",
+   "data_asof": "2026-11-11"
+  },
+  "new": {
+   "id": "2026-11-16",
+   "data_asof": "2026-11-16"
+  }
+ },
+ "records": {
+  "jira_old": 1556,
+  "jira_new": 1591,
+  "jira_both": 1535,
+  "dropped": {
+   "n": 21,
+   "signed": 21,
+   "by_status": {
+    "Refunded": 12,
+    "Paused": 3,
+    "Content Pulled": 3,
+    "CLOSED": 2,
+    "8 Weeks": 1
+   },
+   "created_2024": 15
+  },
+  "added": {
+   "n": 56,
+   "created_before_old_asof": 41,
+   "by_status": {
+    "New Clients": 34,
+    "8 Weeks": 6,
+    "Client Start": 5,
+    "Services Declined": 5,
+    "Onboarding Completed": 3,
+    "6 Weeks": 1,
+    "4 Weeks": 1,
+    "Refunded": 1
+   }
+  },
+  "signed_changes": {
+   "was_signed_now_not": 1,
+   "newly_signed": 1
+  }
+ },
+ "start_date": {
+  "signed_compared": 821,
+  "same": 467,
+  "differ": 354,
+  "pre_june_plus4": 25,
+  "pre_june_other": 0,
+  "post_june": {
+   "n": 357,
+   "differ": 329,
+   "later": 197,
+   "earlier": 132,
+   "median_shift": 2.0,
+   "p10": -8.0,
+   "p90": 22.0
+  }
+ },
+ "under_contract": {
+  "compared": 493,
+  "same": 452,
+  "moved": 41,
+  "moved_later": 41,
+  "median_move_days": 20.0,
+  "max_move_days": 107.0,
+  "new_only": 7,
+  "old_only": 0,
+  "old_had_repeat_contracts": 42
+ },
+ "closing": {
+  "compared": 429,
+  "same": 314,
+  "differ": 115,
+  "earlier": 104,
+  "later": 11,
+  "median_diff_days": -5.0,
+  "new_only": 20,
+  "scheduled_after_asof": 6
+ },
+ "headline": {
+  "old": {
+   "signed": 850,
+   "active": 644,
+   "inactive": 206,
+   "uc_median": 36.0,
+   "uc_mean": 53.75,
+   "uc_n": 499,
+   "closed_median": 77.0,
+   "closed_mean": 96.31,
+   "closed_n": 432,
+   "km_uc": 77.0,
+   "km_closed": 127.0,
+   "active_uc_share": 0.7205,
+   "active_closed_share": 0.6661
+  },
+  "new": {
+   "signed": 843,
+   "active": 648,
+   "inactive": 195,
+   "hunting": 123,
+   "uc_median": 37.5,
+   "uc_mean": 56.17,
+   "uc_n": 492,
+   "closed_median": 73.0,
+   "closed_mean": 92.82,
+   "closed_n": 438,
+   "km_uc": 76.0,
+   "km_closed": 117.0,
+   "active_uc_share": 0.716,
+   "active_closed_share": 0.6759
+  },
+  "populations": {
+   "old": "Q1: every Jira issue with a first UC / CLOSED date; KM and Q2: signed-up Jira issues",
+   "new": "Q1 and KM: won engagements with a confirmed Jira start; Q2: Jira issues by reporting-layer flags"
+  }
+ },
+ "monthly": [
+  {
+   "month": "2026-01",
+   "starts_old": 31,
+   "starts_new": 35,
+   "uc_old": 13,
+   "uc_new": 12,
+   "closed_old": 13,
+   "closed_new": 8,
+   "gap_old": 18,
+   "gap_new": 23
+  },
+  {
+   "month": "2026-02",
+   "starts_old": 23,
+   "starts_new": 24,
+   "uc_old": 13,
+   "uc_new": 12,
+   "closed_old": 9,
+   "closed_new": 10,
+   "gap_old": 10,
+   "gap_new": 12
+  },
+  {
+   "month": "2026-03",
+   "starts_old": 32,
+   "starts_new": 31,
+   "uc_old": 22,
+   "uc_new": 24,
+   "closed_old": 14,
+   "closed_new": 14,
+   "gap_old": 10,
+   "gap_new": 7
+  },
+  {
+   "month": "2026-04",
+   "starts_old": 28,
+   "starts_new": 27,
+   "uc_old": 29,
+   "uc_new": 28,
+   "closed_old": 22,
+   "closed_new": 22,
+   "gap_old": -1,
+   "gap_new": -1
+  },
+  {
+   "month": "2026-05",
+   "starts_old": 34,
+   "starts_new": 37,
+   "uc_old": 21,
+   "uc_new": 19,
+   "closed_old": 26,
+   "closed_new": 26,
+   "gap_old": 13,
+   "gap_new": 18
+  },
+  {
+   "month": "2026-06",
+   "starts_old": 65,
+   "starts_new": 57,
+   "uc_old": 17,
+   "uc_new": 17,
+   "closed_old": 25,
+   "closed_new": 25,
+   "gap_old": 48,
+   "gap_new": 40
+  },
+  {
+   "month": "2026-07",
+   "starts_old": 92,
+   "starts_new": 74,
+   "uc_old": 44,
+   "uc_new": 43,
+   "closed_old": 14,
+   "closed_new": 17,
+   "gap_old": 48,
+   "gap_new": 31
+  },
+  {
+   "month": "2026-08",
+   "starts_old": 82,
+   "starts_new": 74,
+   "uc_old": 55,
+   "uc_new": 52,
+   "closed_old": 43,
+   "closed_new": 43,
+   "gap_old": 27,
+   "gap_new": 22
+  },
+  {
+   "month": "2026-09",
+   "starts_old": 76,
+   "starts_new": 79,
+   "uc_old": 59,
+   "uc_new": 60,
+   "closed_old": 44,
+   "closed_new": 40,
+   "gap_old": 17,
+   "gap_new": 19
+  },
+  {
+   "month": "2026-10",
+   "starts_old": 52,
+   "starts_new": 68,
+   "uc_old": 58,
+   "uc_new": 55,
+   "closed_old": 64,
+   "closed_new": 64,
+   "gap_old": -6,
+   "gap_new": 13
+  },
+  {
+   "month": "2026-11",
+   "starts_old": 9,
+   "starts_new": 10,
+   "uc_old": 17,
+   "uc_new": 26,
+   "closed_old": 10,
+   "closed_new": 15,
+   "gap_old": -8,
+   "gap_new": -16
+  }
+ ]
+}

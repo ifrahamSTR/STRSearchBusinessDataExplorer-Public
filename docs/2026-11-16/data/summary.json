@@ -1,0 +1,2698 @@
+{
+ "version": {
+  "id": "2026-11-16",
+  "label": "16 Nov 2026",
+  "title": "Updated reporting",
+  "status": "current"
+ },
+ "asof": "2026-11-16",
+ "sources": {
+  "folder": "16 Nov UpdatedReports",
+  "workbook": {
+   "file": "New SQL Views for Reporting.xlsx",
+   "bytes": 5030473,
+   "sha256": "8db969f5a437cbbb85cd2c41037e13eeca1427ccfd98df888483d0af47144115",
+   "modified": "2026-11-16 21:27"
+  },
+  "sql_reference": {
+   "file": "STR Search _ Reporting Semantic Layer & SQL Reference.docx",
+   "present": true,
+   "dated": "2026-11-15",
+   "bytes": 23432,
+   "sha256": "fe2052c17e2bb68368fee715c01c239803e2cad1f097c97dea65a53d8ba5edbe"
+  },
+  "sheets": [
+   {
+    "key": "jira",
+    "sheet": "jira_reporting_base",
+    "rows": 1591,
+    "columns": 76
+   },
+   {
+    "key": "deals",
+    "sheet": "pipedrive_reporting_base",
+    "rows": 7969,
+    "columns": 60
+   },
+   {
+    "key": "master",
+    "sheet": "won_clients_master",
+    "rows": 876,
+    "columns": 73
+   },
+   {
+    "key": "events",
+    "sheet": "client_events",
+    "rows": 3941,
+    "columns": 68
+   },
+   {
+    "key": "cash",
+    "sheet": "client_cash_forecast",
+    "rows": 876,
+    "columns": 89
+   }
+  ]
+ },
+ "counts": {
+  "deals": 7969,
+  "deals_in_scope": 7662,
+  "jira": 1591,
+  "engagements": 876,
+  "events": 3941
+ },
+ "definitions": {
+  "start_rule": "client_start_date (Jira): for issues created before 1 Jun 2026, the issue due date, or the issue created date + 4 days when no due date is set; for issues created from 1 Jun 2026, the Pipedrive won date. won_clients_master falls back to the won date when no Jira start exists and labels it 'Pipedrive Fallback'; fallback dates are not confirmed starts and are excluded from starts and cohorts.",
+  "milestones": {
+   "uc": "property_uc_date: the latest currently valid Under Contract date, falling back to the first. Not immutable history: a contract that falls through can move or clear it.",
+   "pi": "property_passed_inspection_date: date the property passed inspection.",
+   "closed": "property_closed_date: the closing milestone. Dates after the data date are scheduled closings and are not counted as closed in this build.",
+   "refund": "client_refunded_date: date the Jira status last changed to Refunded (a status proxy, not a verified refund transaction)."
+  },
+  "henry": "HENRY = total out-of-pocket capital (Jira total_oop) of $225,000 or less. Clients without a total_oop value are 'unknown', not 'not HENRY'.",
+  "cash": "Modeled contractual cash (client_cash_forecast), not verified receipts or accounting revenue. Paid In Full: 100% assumed collected in the won month. Split Pay: 50% assumed collected in the won month and 50% at property close; unclosed split pay carries 50% modeled outstanding. Refund-excluded amounts zero the whole engagement when the Jira status is Refunded.",
+  "statuses": {
+   "signed_up": [
+    "Client Start",
+    "2 Weeks",
+    "4 Weeks",
+    "6 Weeks",
+    "8 Weeks",
+    "Additional Service",
+    "Under Contract",
+    "Passed Inspection",
+    "CLOSED",
+    "Photography Shared",
+    "Listed",
+    "Paused",
+    "Refunded",
+    "Content Pulled"
+   ],
+   "active": [
+    "Client Start",
+    "2 Weeks",
+    "4 Weeks",
+    "6 Weeks",
+    "8 Weeks",
+    "Under Contract",
+    "Passed Inspection",
+    "CLOSED",
+    "Photography Shared",
+    "Listed",
+    "Content Pulled"
+   ],
+   "inactive": [
+    "Refunded",
+    "Paused",
+    "Additional Service"
+   ],
+   "hunting": [
+    "Client Start",
+    "2 Weeks",
+    "4 Weeks",
+    "6 Weeks",
+    "8 Weeks"
+   ],
+   "presale": [
+    "New Clients",
+    "Onboarding Completed"
+   ],
+   "declined": [
+    "Services Declined"
+   ]
+  }
+ },
+ "expected": {
+  "deals": {
+   "all": 7969,
+   "in_scope": 7662,
+   "won": 874,
+   "lost": 5705,
+   "open": 1083,
+   "won_value": 15748809,
+   "median_days_to_win": 21,
+   "won_all": 876
+  },
+  "jira": {
+   "total": 1591,
+   "signed": 843,
+   "active": 648,
+   "inactive": 195,
+   "hunting": 123,
+   "presale": 347,
+   "declined": 401,
+   "refunded": 82,
+   "henry": 122,
+   "signed_oop_known": 526,
+   "signed_no_start": 17
+  },
+  "engagements": {
+   "total": 876,
+   "has_jira": 829,
+   "no_jira": 47,
+   "confirmed_starts": 825,
+   "fallback": 51,
+   "repeat": 25,
+   "anomalies": 14,
+   "key_mismatch": 4,
+   "refunded": 79,
+   "hunting_official": 108,
+   "jira_not_signed": 10,
+   "scheduled_closings": 6
+  },
+  "q1": {
+   "population": "confirmed Jira starts (client_cohort_performance)",
+   "n": 825,
+   "uc": {
+    "n": 492,
+    "mean": 56.17,
+    "median": 37.5,
+    "p25": 21,
+    "p75": 67,
+    "p90": 116.7
+   },
+   "closed": {
+    "n": 438,
+    "mean": 92.82,
+    "median": 73,
+    "p25": 55.25,
+    "p75": 108,
+    "p90": 149.6
+   },
+   "uc_to_close": {
+    "n": 372,
+    "mean": 37.87,
+    "median": 36,
+    "p25": 30,
+    "p75": 44,
+    "p90": 54
+   },
+   "km_uc": 76,
+   "km_closed": 117,
+   "km_events": {
+    "uc": 493,
+    "closed": 438
+   },
+   "negative_days_to_uc": 1
+  },
+  "q2": {
+   "population": "Jira issues (reporting-layer flags)",
+   "active": 648,
+   "active_uc": 464,
+   "active_closed": 438,
+   "active_closed_scheduled": 6,
+   "signed": 843,
+   "signed_uc": 497,
+   "signed_closed": 440,
+   "hunting": 123
+  },
+  "q3": [
+   {
+    "month": "2024-01",
+    "won": 0,
+    "started": 0,
+    "uc": 0,
+    "pi": 0,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": 0,
+    "replacement_rate": null,
+    "cumulative_net_change": 0,
+    "days": 31
+   },
+   {
+    "month": "2024-02",
+    "won": 4,
+    "started": 2,
+    "uc": 0,
+    "pi": 0,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": 2,
+    "replacement_rate": 0,
+    "cumulative_net_change": 2,
+    "days": 29
+   },
+   {
+    "month": "2024-03",
+    "won": 2,
+    "started": 2,
+    "uc": 1,
+    "pi": 0,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": 1,
+    "replacement_rate": 0.5,
+    "cumulative_net_change": 3,
+    "days": 31
+   },
+   {
+    "month": "2024-04",
+    "won": 11,
+    "started": 10,
+    "uc": 4,
+    "pi": 2,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": 6,
+    "replacement_rate": 0.4,
+    "cumulative_net_change": 9,
+    "days": 30
+   },
+   {
+    "month": "2024-05",
+    "won": 2,
+    "started": 3,
+    "uc": 5,
+    "pi": 5,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": -2,
+    "replacement_rate": 1.6667,
+    "cumulative_net_change": 7,
+    "days": 31
+   },
+   {
+    "month": "2024-06",
+    "won": 8,
+    "started": 6,
+    "uc": 4,
+    "pi": 4,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": 2,
+    "replacement_rate": 0.6667,
+    "cumulative_net_change": 9,
+    "days": 30
+   },
+   {
+    "month": "2024-07",
+    "won": 13,
+    "started": 8,
+    "uc": 6,
+    "pi": 5,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": 2,
+    "replacement_rate": 0.75,
+    "cumulative_net_change": 11,
+    "days": 31
+   },
+   {
+    "month": "2024-08",
+    "won": 13,
+    "started": 14,
+    "uc": 7,
+    "pi": 6,
+    "closed": 0,
+    "refunded": 0,
+    "net_client_change": 7,
+    "replacement_rate": 0.5,
+    "cumulative_net_change": 18,
+    "days": 31
+   },
+   {
+    "month": "2024-09",
+    "won": 13,
+    "started": 7,
+    "uc": 11,
+    "pi": 12,
+    "closed": 6,
+    "refunded": 0,
+    "net_client_change": -4,
+    "replacement_rate": 1.5714,
+    "cumulative_net_change": 14,
+    "days": 30
+   },
+   {
+    "month": "2024-10",
+    "won": 9,
+    "started": 8,
+    "uc": 4,
+    "pi": 5,
+    "closed": 12,
+    "refunded": 0,
+    "net_client_change": 4,
+    "replacement_rate": 0.5,
+    "cumulative_net_change": 18,
+    "days": 31
+   },
+   {
+    "month": "2024-11",
+    "won": 6,
+    "started": 4,
+    "uc": 4,
+    "pi": 2,
+    "closed": 5,
+    "refunded": 0,
+    "net_client_change": 0,
+    "replacement_rate": 1,
+    "cumulative_net_change": 18,
+    "days": 30
+   },
+   {
+    "month": "2024-12",
+    "won": 7,
+    "started": 7,
+    "uc": 5,
+    "pi": 4,
+    "closed": 3,
+    "refunded": 0,
+    "net_client_change": 2,
+    "replacement_rate": 0.7143,
+    "cumulative_net_change": 20,
+    "days": 31
+   },
+   {
+    "month": "2025-01",
+    "won": 12,
+    "started": 10,
+    "uc": 7,
+    "pi": 7,
+    "closed": 4,
+    "refunded": 0,
+    "net_client_change": 3,
+    "replacement_rate": 0.7,
+    "cumulative_net_change": 23,
+    "days": 31
+   },
+   {
+    "month": "2025-02",
+    "won": 6,
+    "started": 4,
+    "uc": 3,
+    "pi": 4,
+    "closed": 5,
+    "refunded": 0,
+    "net_client_change": 1,
+    "replacement_rate": 0.75,
+    "cumulative_net_change": 24,
+    "days": 28
+   },
+   {
+    "month": "2025-03",
+    "won": 12,
+    "started": 12,
+    "uc": 4,
+    "pi": 2,
+    "closed": 5,
+    "refunded": 3,
+    "net_client_change": 8,
+    "replacement_rate": 0.3333,
+    "cumulative_net_change": 32,
+    "days": 31
+   },
+   {
+    "month": "2025-04",
+    "won": 11,
+    "started": 11,
+    "uc": 7,
+    "pi": 10,
+    "closed": 3,
+    "refunded": 0,
+    "net_client_change": 4,
+    "replacement_rate": 0.6364,
+    "cumulative_net_change": 36,
+    "days": 30
+   },
+   {
+    "month": "2025-05",
+    "won": 16,
+    "started": 15,
+    "uc": 6,
+    "pi": 4,
+    "closed": 8,
+    "refunded": 1,
+    "net_client_change": 9,
+    "replacement_rate": 0.4,
+    "cumulative_net_change": 45,
+    "days": 31
+   },
+   {
+    "month": "2025-06",
+    "won": 16,
+    "started": 15,
+    "uc": 11,
+    "pi": 8,
+    "closed": 8,
+    "refunded": 0,
+    "net_client_change": 4,
+    "replacement_rate": 0.7333,
+    "cumulative_net_change": 49,
+    "days": 30
+   },
+   {
+    "month": "2025-07",
+    "won": 24,
+    "started": 24,
+    "uc": 4,
+    "pi": 9,
+    "closed": 9,
+    "refunded": 0,
+    "net_client_change": 20,
+    "replacement_rate": 0.1667,
+    "cumulative_net_change": 69,
+    "days": 31
+   },
+   {
+    "month": "2025-08",
+    "won": 38,
+    "started": 29,
+    "uc": 10,
+    "pi": 8,
+    "closed": 12,
+    "refunded": 3,
+    "net_client_change": 19,
+    "replacement_rate": 0.3448,
+    "cumulative_net_change": 88,
+    "days": 31
+   },
+   {
+    "month": "2025-09",
+    "won": 37,
+    "started": 39,
+    "uc": 7,
+    "pi": 5,
+    "closed": 14,
+    "refunded": 2,
+    "net_client_change": 32,
+    "replacement_rate": 0.1795,
+    "cumulative_net_change": 120,
+    "days": 30
+   },
+   {
+    "month": "2025-10",
+    "won": 38,
+    "started": 38,
+    "uc": 17,
+    "pi": 17,
+    "closed": 18,
+    "refunded": 3,
+    "net_client_change": 21,
+    "replacement_rate": 0.4474,
+    "cumulative_net_change": 141,
+    "days": 31
+   },
+   {
+    "month": "2025-11",
+    "won": 17,
+    "started": 20,
+    "uc": 8,
+    "pi": 7,
+    "closed": 18,
+    "refunded": 4,
+    "net_client_change": 12,
+    "replacement_rate": 0.4,
+    "cumulative_net_change": 153,
+    "days": 30
+   },
+   {
+    "month": "2025-12",
+    "won": 42,
+    "started": 21,
+    "uc": 10,
+    "pi": 19,
+    "closed": 24,
+    "refunded": 2,
+    "net_client_change": 11,
+    "replacement_rate": 0.4762,
+    "cumulative_net_change": 164,
+    "days": 31
+   },
+   {
+    "month": "2026-01",
+    "won": 32,
+    "started": 35,
+    "uc": 12,
+    "pi": 12,
+    "closed": 8,
+    "refunded": 2,
+    "net_client_change": 23,
+    "replacement_rate": 0.3429,
+    "cumulative_net_change": 187,
+    "days": 31
+   },
+   {
+    "month": "2026-02",
+    "won": 20,
+    "started": 24,
+    "uc": 12,
+    "pi": 10,
+    "closed": 10,
+    "refunded": 1,
+    "net_client_change": 12,
+    "replacement_rate": 0.5,
+    "cumulative_net_change": 199,
+    "days": 28
+   },
+   {
+    "month": "2026-03",
+    "won": 36,
+    "started": 31,
+    "uc": 24,
+    "pi": 18,
+    "closed": 14,
+    "refunded": 2,
+    "net_client_change": 7,
+    "replacement_rate": 0.7742,
+    "cumulative_net_change": 206,
+    "days": 31
+   },
+   {
+    "month": "2026-04",
+    "won": 31,
+    "started": 27,
+    "uc": 28,
+    "pi": 23,
+    "closed": 22,
+    "refunded": 1,
+    "net_client_change": -1,
+    "replacement_rate": 1.037,
+    "cumulative_net_change": 205,
+    "days": 30
+   },
+   {
+    "month": "2026-05",
+    "won": 25,
+    "started": 37,
+    "uc": 19,
+    "pi": 20,
+    "closed": 26,
+    "refunded": 1,
+    "net_client_change": 18,
+    "replacement_rate": 0.5135,
+    "cumulative_net_change": 223,
+    "days": 31
+   },
+   {
+    "month": "2026-06",
+    "won": 58,
+    "started": 57,
+    "uc": 17,
+    "pi": 11,
+    "closed": 25,
+    "refunded": 3,
+    "net_client_change": 40,
+    "replacement_rate": 0.2982,
+    "cumulative_net_change": 263,
+    "days": 30
+   },
+   {
+    "month": "2026-07",
+    "won": 79,
+    "started": 74,
+    "uc": 43,
+    "pi": 8,
+    "closed": 17,
+    "refunded": 4,
+    "net_client_change": 31,
+    "replacement_rate": 0.5811,
+    "cumulative_net_change": 294,
+    "days": 31
+   },
+   {
+    "month": "2026-08",
+    "won": 76,
+    "started": 74,
+    "uc": 52,
+    "pi": 24,
+    "closed": 43,
+    "refunded": 10,
+    "net_client_change": 22,
+    "replacement_rate": 0.7027,
+    "cumulative_net_change": 316,
+    "days": 31
+   },
+   {
+    "month": "2026-09",
+    "won": 82,
+    "started": 79,
+    "uc": 60,
+    "pi": 41,
+    "closed": 40,
+    "refunded": 5,
+    "net_client_change": 19,
+    "replacement_rate": 0.7595,
+    "cumulative_net_change": 335,
+    "days": 30
+   },
+   {
+    "month": "2026-10",
+    "won": 69,
+    "started": 68,
+    "uc": 55,
+    "pi": 31,
+    "closed": 64,
+    "refunded": 24,
+    "net_client_change": 13,
+    "replacement_rate": 0.8088,
+    "cumulative_net_change": 348,
+    "days": 31
+   },
+   {
+    "month": "2026-11",
+    "won": 11,
+    "started": 10,
+    "uc": 26,
+    "pi": 5,
+    "closed": 15,
+    "refunded": 8,
+    "net_client_change": -16,
+    "replacement_rate": 2.6,
+    "cumulative_net_change": 332,
+    "days": 16
+   }
+  ],
+  "intake": [
+   {
+    "month": "2024-03",
+    "Signed client": 4,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 4
+   },
+   {
+    "month": "2024-04",
+    "Signed client": 10,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 10
+   },
+   {
+    "month": "2024-05",
+    "Signed client": 3,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 3
+   },
+   {
+    "month": "2024-06",
+    "Signed client": 6,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 6
+   },
+   {
+    "month": "2024-07",
+    "Signed client": 7,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 7
+   },
+   {
+    "month": "2024-08",
+    "Signed client": 16,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 16
+   },
+   {
+    "month": "2024-09",
+    "Signed client": 6,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 6
+   },
+   {
+    "month": "2024-10",
+    "Signed client": 9,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 9
+   },
+   {
+    "month": "2024-11",
+    "Signed client": 4,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 4
+   },
+   {
+    "month": "2024-12",
+    "Signed client": 8,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 8
+   },
+   {
+    "month": "2025-01",
+    "Signed client": 11,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 11
+   },
+   {
+    "month": "2025-02",
+    "Signed client": 6,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 6
+   },
+   {
+    "month": "2025-03",
+    "Signed client": 13,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 13
+   },
+   {
+    "month": "2025-04",
+    "Signed client": 9,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 9
+   },
+   {
+    "month": "2025-05",
+    "Signed client": 14,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 14
+   },
+   {
+    "month": "2025-06",
+    "Signed client": 16,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 16
+   },
+   {
+    "month": "2025-07",
+    "Signed client": 26,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 26
+   },
+   {
+    "month": "2025-08",
+    "Signed client": 34,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 34
+   },
+   {
+    "month": "2025-09",
+    "Signed client": 38,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 38
+   },
+   {
+    "month": "2025-10",
+    "Signed client": 35,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 35
+   },
+   {
+    "month": "2025-11",
+    "Signed client": 17,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 17
+   },
+   {
+    "month": "2025-12",
+    "Signed client": 24,
+    "Pre-sale": 1,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 25
+   },
+   {
+    "month": "2026-01",
+    "Signed client": 34,
+    "Pre-sale": 3,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 37
+   },
+   {
+    "month": "2026-02",
+    "Signed client": 18,
+    "Pre-sale": 2,
+    "Services declined": 2,
+    "Other": 0,
+    "all": 22
+   },
+   {
+    "month": "2026-03",
+    "Signed client": 35,
+    "Pre-sale": 0,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 35
+   },
+   {
+    "month": "2026-04",
+    "Signed client": 31,
+    "Pre-sale": 1,
+    "Services declined": 1,
+    "Other": 0,
+    "all": 33
+   },
+   {
+    "month": "2026-05",
+    "Signed client": 31,
+    "Pre-sale": 6,
+    "Services declined": 8,
+    "Other": 0,
+    "all": 45
+   },
+   {
+    "month": "2026-06",
+    "Signed client": 75,
+    "Pre-sale": 28,
+    "Services declined": 66,
+    "Other": 0,
+    "all": 169
+   },
+   {
+    "month": "2026-07",
+    "Signed client": 86,
+    "Pre-sale": 47,
+    "Services declined": 68,
+    "Other": 0,
+    "all": 201
+   },
+   {
+    "month": "2026-08",
+    "Signed client": 88,
+    "Pre-sale": 64,
+    "Services declined": 116,
+    "Other": 0,
+    "all": 268
+   },
+   {
+    "month": "2026-09",
+    "Signed client": 69,
+    "Pre-sale": 70,
+    "Services declined": 101,
+    "Other": 0,
+    "all": 240
+   },
+   {
+    "month": "2026-10",
+    "Signed client": 49,
+    "Pre-sale": 85,
+    "Services declined": 39,
+    "Other": 0,
+    "all": 173
+   },
+   {
+    "month": "2026-11",
+    "Signed client": 11,
+    "Pre-sale": 40,
+    "Services declined": 0,
+    "Other": 0,
+    "all": 51
+   }
+  ],
+  "cohort": [
+   {
+    "month": "2024-02",
+    "n": 2,
+    "refunded": 0,
+    "reached_uc": 2,
+    "w14": {
+     "eligible": 2,
+     "converted": 0,
+     "adj_eligible": 2,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w45": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w60": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w90": {
+     "eligible": 2,
+     "converted": 2,
+     "adj_eligible": 2,
+     "adj_converted": 2
+    }
+   },
+   {
+    "month": "2024-03",
+    "n": 2,
+    "refunded": 0,
+    "reached_uc": 2,
+    "w14": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w45": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w60": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w90": {
+     "eligible": 2,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    }
+   },
+   {
+    "month": "2024-04",
+    "n": 10,
+    "refunded": 0,
+    "reached_uc": 10,
+    "w14": {
+     "eligible": 10,
+     "converted": 2,
+     "adj_eligible": 10,
+     "adj_converted": 2
+    },
+    "w30": {
+     "eligible": 10,
+     "converted": 6,
+     "adj_eligible": 10,
+     "adj_converted": 6
+    },
+    "w45": {
+     "eligible": 10,
+     "converted": 6,
+     "adj_eligible": 10,
+     "adj_converted": 6
+    },
+    "w60": {
+     "eligible": 10,
+     "converted": 7,
+     "adj_eligible": 10,
+     "adj_converted": 7
+    },
+    "w90": {
+     "eligible": 10,
+     "converted": 8,
+     "adj_eligible": 10,
+     "adj_converted": 8
+    }
+   },
+   {
+    "month": "2024-05",
+    "n": 3,
+    "refunded": 0,
+    "reached_uc": 2,
+    "w14": {
+     "eligible": 3,
+     "converted": 0,
+     "adj_eligible": 3,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 3,
+     "converted": 1,
+     "adj_eligible": 3,
+     "adj_converted": 1
+    },
+    "w45": {
+     "eligible": 3,
+     "converted": 2,
+     "adj_eligible": 3,
+     "adj_converted": 2
+    },
+    "w60": {
+     "eligible": 3,
+     "converted": 2,
+     "adj_eligible": 3,
+     "adj_converted": 2
+    },
+    "w90": {
+     "eligible": 3,
+     "converted": 2,
+     "adj_eligible": 3,
+     "adj_converted": 2
+    }
+   },
+   {
+    "month": "2024-06",
+    "n": 6,
+    "refunded": 0,
+    "reached_uc": 6,
+    "w14": {
+     "eligible": 6,
+     "converted": 5,
+     "adj_eligible": 6,
+     "adj_converted": 5
+    },
+    "w30": {
+     "eligible": 6,
+     "converted": 5,
+     "adj_eligible": 6,
+     "adj_converted": 5
+    },
+    "w45": {
+     "eligible": 6,
+     "converted": 5,
+     "adj_eligible": 6,
+     "adj_converted": 5
+    },
+    "w60": {
+     "eligible": 6,
+     "converted": 6,
+     "adj_eligible": 6,
+     "adj_converted": 6
+    },
+    "w90": {
+     "eligible": 6,
+     "converted": 6,
+     "adj_eligible": 6,
+     "adj_converted": 6
+    }
+   },
+   {
+    "month": "2024-07",
+    "n": 8,
+    "refunded": 0,
+    "reached_uc": 7,
+    "w14": {
+     "eligible": 8,
+     "converted": 3,
+     "adj_eligible": 8,
+     "adj_converted": 3
+    },
+    "w30": {
+     "eligible": 8,
+     "converted": 4,
+     "adj_eligible": 8,
+     "adj_converted": 4
+    },
+    "w45": {
+     "eligible": 8,
+     "converted": 4,
+     "adj_eligible": 8,
+     "adj_converted": 4
+    },
+    "w60": {
+     "eligible": 8,
+     "converted": 4,
+     "adj_eligible": 8,
+     "adj_converted": 4
+    },
+    "w90": {
+     "eligible": 8,
+     "converted": 7,
+     "adj_eligible": 8,
+     "adj_converted": 7
+    }
+   },
+   {
+    "month": "2024-08",
+    "n": 14,
+    "refunded": 0,
+    "reached_uc": 13,
+    "w14": {
+     "eligible": 14,
+     "converted": 3,
+     "adj_eligible": 14,
+     "adj_converted": 3
+    },
+    "w30": {
+     "eligible": 14,
+     "converted": 7,
+     "adj_eligible": 14,
+     "adj_converted": 7
+    },
+    "w45": {
+     "eligible": 14,
+     "converted": 10,
+     "adj_eligible": 14,
+     "adj_converted": 10
+    },
+    "w60": {
+     "eligible": 14,
+     "converted": 10,
+     "adj_eligible": 14,
+     "adj_converted": 10
+    },
+    "w90": {
+     "eligible": 14,
+     "converted": 11,
+     "adj_eligible": 14,
+     "adj_converted": 11
+    }
+   },
+   {
+    "month": "2024-09",
+    "n": 7,
+    "refunded": 0,
+    "reached_uc": 5,
+    "w14": {
+     "eligible": 7,
+     "converted": 2,
+     "adj_eligible": 7,
+     "adj_converted": 2
+    },
+    "w30": {
+     "eligible": 7,
+     "converted": 3,
+     "adj_eligible": 7,
+     "adj_converted": 3
+    },
+    "w45": {
+     "eligible": 7,
+     "converted": 4,
+     "adj_eligible": 7,
+     "adj_converted": 4
+    },
+    "w60": {
+     "eligible": 7,
+     "converted": 4,
+     "adj_eligible": 7,
+     "adj_converted": 4
+    },
+    "w90": {
+     "eligible": 7,
+     "converted": 5,
+     "adj_eligible": 7,
+     "adj_converted": 5
+    }
+   },
+   {
+    "month": "2024-10",
+    "n": 8,
+    "refunded": 0,
+    "reached_uc": 7,
+    "w14": {
+     "eligible": 8,
+     "converted": 0,
+     "adj_eligible": 8,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 8,
+     "converted": 1,
+     "adj_eligible": 8,
+     "adj_converted": 1
+    },
+    "w45": {
+     "eligible": 8,
+     "converted": 2,
+     "adj_eligible": 8,
+     "adj_converted": 2
+    },
+    "w60": {
+     "eligible": 8,
+     "converted": 3,
+     "adj_eligible": 8,
+     "adj_converted": 3
+    },
+    "w90": {
+     "eligible": 8,
+     "converted": 5,
+     "adj_eligible": 8,
+     "adj_converted": 5
+    }
+   },
+   {
+    "month": "2024-11",
+    "n": 4,
+    "refunded": 0,
+    "reached_uc": 4,
+    "w14": {
+     "eligible": 4,
+     "converted": 1,
+     "adj_eligible": 4,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 4,
+     "converted": 2,
+     "adj_eligible": 4,
+     "adj_converted": 2
+    },
+    "w45": {
+     "eligible": 4,
+     "converted": 3,
+     "adj_eligible": 4,
+     "adj_converted": 3
+    },
+    "w60": {
+     "eligible": 4,
+     "converted": 4,
+     "adj_eligible": 4,
+     "adj_converted": 4
+    },
+    "w90": {
+     "eligible": 4,
+     "converted": 4,
+     "adj_eligible": 4,
+     "adj_converted": 4
+    }
+   },
+   {
+    "month": "2024-12",
+    "n": 7,
+    "refunded": 0,
+    "reached_uc": 6,
+    "w14": {
+     "eligible": 7,
+     "converted": 0,
+     "adj_eligible": 7,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 7,
+     "converted": 1,
+     "adj_eligible": 7,
+     "adj_converted": 1
+    },
+    "w45": {
+     "eligible": 7,
+     "converted": 2,
+     "adj_eligible": 7,
+     "adj_converted": 2
+    },
+    "w60": {
+     "eligible": 7,
+     "converted": 3,
+     "adj_eligible": 7,
+     "adj_converted": 3
+    },
+    "w90": {
+     "eligible": 7,
+     "converted": 3,
+     "adj_eligible": 7,
+     "adj_converted": 3
+    }
+   },
+   {
+    "month": "2025-01",
+    "n": 10,
+    "refunded": 0,
+    "reached_uc": 5,
+    "w14": {
+     "eligible": 10,
+     "converted": 1,
+     "adj_eligible": 10,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 10,
+     "converted": 2,
+     "adj_eligible": 10,
+     "adj_converted": 2
+    },
+    "w45": {
+     "eligible": 10,
+     "converted": 4,
+     "adj_eligible": 10,
+     "adj_converted": 4
+    },
+    "w60": {
+     "eligible": 10,
+     "converted": 4,
+     "adj_eligible": 10,
+     "adj_converted": 4
+    },
+    "w90": {
+     "eligible": 10,
+     "converted": 4,
+     "adj_eligible": 10,
+     "adj_converted": 4
+    }
+   },
+   {
+    "month": "2025-02",
+    "n": 4,
+    "refunded": 2,
+    "reached_uc": 2,
+    "w14": {
+     "eligible": 4,
+     "converted": 0,
+     "adj_eligible": 2,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 4,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w45": {
+     "eligible": 4,
+     "converted": 1,
+     "adj_eligible": 2,
+     "adj_converted": 1
+    },
+    "w60": {
+     "eligible": 4,
+     "converted": 2,
+     "adj_eligible": 2,
+     "adj_converted": 2
+    },
+    "w90": {
+     "eligible": 4,
+     "converted": 2,
+     "adj_eligible": 2,
+     "adj_converted": 2
+    }
+   },
+   {
+    "month": "2025-03",
+    "n": 12,
+    "refunded": 3,
+    "reached_uc": 6,
+    "w14": {
+     "eligible": 12,
+     "converted": 1,
+     "adj_eligible": 9,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 12,
+     "converted": 3,
+     "adj_eligible": 9,
+     "adj_converted": 3
+    },
+    "w45": {
+     "eligible": 12,
+     "converted": 5,
+     "adj_eligible": 9,
+     "adj_converted": 5
+    },
+    "w60": {
+     "eligible": 12,
+     "converted": 6,
+     "adj_eligible": 9,
+     "adj_converted": 6
+    },
+    "w90": {
+     "eligible": 12,
+     "converted": 6,
+     "adj_eligible": 9,
+     "adj_converted": 6
+    }
+   },
+   {
+    "month": "2025-04",
+    "n": 11,
+    "refunded": 1,
+    "reached_uc": 6,
+    "w14": {
+     "eligible": 11,
+     "converted": 1,
+     "adj_eligible": 10,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 11,
+     "converted": 2,
+     "adj_eligible": 10,
+     "adj_converted": 2
+    },
+    "w45": {
+     "eligible": 11,
+     "converted": 3,
+     "adj_eligible": 10,
+     "adj_converted": 3
+    },
+    "w60": {
+     "eligible": 11,
+     "converted": 5,
+     "adj_eligible": 10,
+     "adj_converted": 5
+    },
+    "w90": {
+     "eligible": 11,
+     "converted": 6,
+     "adj_eligible": 10,
+     "adj_converted": 6
+    }
+   },
+   {
+    "month": "2025-05",
+    "n": 15,
+    "refunded": 0,
+    "reached_uc": 10,
+    "w14": {
+     "eligible": 15,
+     "converted": 2,
+     "adj_eligible": 15,
+     "adj_converted": 2
+    },
+    "w30": {
+     "eligible": 15,
+     "converted": 6,
+     "adj_eligible": 15,
+     "adj_converted": 6
+    },
+    "w45": {
+     "eligible": 15,
+     "converted": 7,
+     "adj_eligible": 15,
+     "adj_converted": 7
+    },
+    "w60": {
+     "eligible": 15,
+     "converted": 9,
+     "adj_eligible": 15,
+     "adj_converted": 9
+    },
+    "w90": {
+     "eligible": 15,
+     "converted": 10,
+     "adj_eligible": 15,
+     "adj_converted": 10
+    }
+   },
+   {
+    "month": "2025-06",
+    "n": 15,
+    "refunded": 2,
+    "reached_uc": 6,
+    "w14": {
+     "eligible": 15,
+     "converted": 0,
+     "adj_eligible": 13,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 15,
+     "converted": 0,
+     "adj_eligible": 13,
+     "adj_converted": 0
+    },
+    "w45": {
+     "eligible": 15,
+     "converted": 0,
+     "adj_eligible": 13,
+     "adj_converted": 0
+    },
+    "w60": {
+     "eligible": 15,
+     "converted": 0,
+     "adj_eligible": 13,
+     "adj_converted": 0
+    },
+    "w90": {
+     "eligible": 15,
+     "converted": 2,
+     "adj_eligible": 13,
+     "adj_converted": 1
+    }
+   },
+   {
+    "month": "2025-07",
+    "n": 24,
+    "refunded": 1,
+    "reached_uc": 9,
+    "w14": {
+     "eligible": 24,
+     "converted": 1,
+     "adj_eligible": 23,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 24,
+     "converted": 3,
+     "adj_eligible": 23,
+     "adj_converted": 3
+    },
+    "w45": {
+     "eligible": 24,
+     "converted": 6,
+     "adj_eligible": 23,
+     "adj_converted": 6
+    },
+    "w60": {
+     "eligible": 24,
+     "converted": 6,
+     "adj_eligible": 23,
+     "adj_converted": 6
+    },
+    "w90": {
+     "eligible": 24,
+     "converted": 7,
+     "adj_eligible": 23,
+     "adj_converted": 7
+    }
+   },
+   {
+    "month": "2025-08",
+    "n": 29,
+    "refunded": 3,
+    "reached_uc": 12,
+    "w14": {
+     "eligible": 29,
+     "converted": 3,
+     "adj_eligible": 26,
+     "adj_converted": 3
+    },
+    "w30": {
+     "eligible": 29,
+     "converted": 4,
+     "adj_eligible": 26,
+     "adj_converted": 4
+    },
+    "w45": {
+     "eligible": 29,
+     "converted": 8,
+     "adj_eligible": 26,
+     "adj_converted": 8
+    },
+    "w60": {
+     "eligible": 29,
+     "converted": 8,
+     "adj_eligible": 26,
+     "adj_converted": 8
+    },
+    "w90": {
+     "eligible": 29,
+     "converted": 9,
+     "adj_eligible": 26,
+     "adj_converted": 9
+    }
+   },
+   {
+    "month": "2025-09",
+    "n": 39,
+    "refunded": 2,
+    "reached_uc": 21,
+    "w14": {
+     "eligible": 39,
+     "converted": 1,
+     "adj_eligible": 37,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 39,
+     "converted": 5,
+     "adj_eligible": 37,
+     "adj_converted": 5
+    },
+    "w45": {
+     "eligible": 39,
+     "converted": 9,
+     "adj_eligible": 37,
+     "adj_converted": 9
+    },
+    "w60": {
+     "eligible": 39,
+     "converted": 12,
+     "adj_eligible": 37,
+     "adj_converted": 12
+    },
+    "w90": {
+     "eligible": 39,
+     "converted": 15,
+     "adj_eligible": 37,
+     "adj_converted": 15
+    }
+   },
+   {
+    "month": "2025-10",
+    "n": 38,
+    "refunded": 6,
+    "reached_uc": 15,
+    "w14": {
+     "eligible": 38,
+     "converted": 4,
+     "adj_eligible": 32,
+     "adj_converted": 4
+    },
+    "w30": {
+     "eligible": 38,
+     "converted": 7,
+     "adj_eligible": 32,
+     "adj_converted": 7
+    },
+    "w45": {
+     "eligible": 38,
+     "converted": 7,
+     "adj_eligible": 32,
+     "adj_converted": 7
+    },
+    "w60": {
+     "eligible": 38,
+     "converted": 8,
+     "adj_eligible": 32,
+     "adj_converted": 8
+    },
+    "w90": {
+     "eligible": 38,
+     "converted": 8,
+     "adj_eligible": 32,
+     "adj_converted": 8
+    }
+   },
+   {
+    "month": "2025-11",
+    "n": 20,
+    "refunded": 1,
+    "reached_uc": 11,
+    "w14": {
+     "eligible": 20,
+     "converted": 1,
+     "adj_eligible": 19,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 20,
+     "converted": 3,
+     "adj_eligible": 19,
+     "adj_converted": 3
+    },
+    "w45": {
+     "eligible": 20,
+     "converted": 4,
+     "adj_eligible": 19,
+     "adj_converted": 4
+    },
+    "w60": {
+     "eligible": 20,
+     "converted": 5,
+     "adj_eligible": 19,
+     "adj_converted": 5
+    },
+    "w90": {
+     "eligible": 20,
+     "converted": 5,
+     "adj_eligible": 19,
+     "adj_converted": 5
+    }
+   },
+   {
+    "month": "2025-12",
+    "n": 21,
+    "refunded": 1,
+    "reached_uc": 16,
+    "w14": {
+     "eligible": 21,
+     "converted": 3,
+     "adj_eligible": 20,
+     "adj_converted": 3
+    },
+    "w30": {
+     "eligible": 21,
+     "converted": 3,
+     "adj_eligible": 20,
+     "adj_converted": 3
+    },
+    "w45": {
+     "eligible": 21,
+     "converted": 7,
+     "adj_eligible": 20,
+     "adj_converted": 7
+    },
+    "w60": {
+     "eligible": 21,
+     "converted": 8,
+     "adj_eligible": 20,
+     "adj_converted": 8
+    },
+    "w90": {
+     "eligible": 21,
+     "converted": 10,
+     "adj_eligible": 20,
+     "adj_converted": 10
+    }
+   },
+   {
+    "month": "2026-01",
+    "n": 35,
+    "refunded": 2,
+    "reached_uc": 24,
+    "w14": {
+     "eligible": 35,
+     "converted": 2,
+     "adj_eligible": 33,
+     "adj_converted": 2
+    },
+    "w30": {
+     "eligible": 35,
+     "converted": 6,
+     "adj_eligible": 33,
+     "adj_converted": 6
+    },
+    "w45": {
+     "eligible": 35,
+     "converted": 9,
+     "adj_eligible": 33,
+     "adj_converted": 9
+    },
+    "w60": {
+     "eligible": 35,
+     "converted": 12,
+     "adj_eligible": 33,
+     "adj_converted": 12
+    },
+    "w90": {
+     "eligible": 35,
+     "converted": 17,
+     "adj_eligible": 33,
+     "adj_converted": 17
+    }
+   },
+   {
+    "month": "2026-02",
+    "n": 24,
+    "refunded": 0,
+    "reached_uc": 16,
+    "w14": {
+     "eligible": 24,
+     "converted": 1,
+     "adj_eligible": 24,
+     "adj_converted": 1
+    },
+    "w30": {
+     "eligible": 24,
+     "converted": 5,
+     "adj_eligible": 24,
+     "adj_converted": 5
+    },
+    "w45": {
+     "eligible": 24,
+     "converted": 6,
+     "adj_eligible": 24,
+     "adj_converted": 6
+    },
+    "w60": {
+     "eligible": 24,
+     "converted": 9,
+     "adj_eligible": 24,
+     "adj_converted": 9
+    },
+    "w90": {
+     "eligible": 24,
+     "converted": 11,
+     "adj_eligible": 24,
+     "adj_converted": 11
+    }
+   },
+   {
+    "month": "2026-03",
+    "n": 31,
+    "refunded": 2,
+    "reached_uc": 20,
+    "w14": {
+     "eligible": 31,
+     "converted": 3,
+     "adj_eligible": 29,
+     "adj_converted": 3
+    },
+    "w30": {
+     "eligible": 31,
+     "converted": 7,
+     "adj_eligible": 29,
+     "adj_converted": 7
+    },
+    "w45": {
+     "eligible": 31,
+     "converted": 12,
+     "adj_eligible": 29,
+     "adj_converted": 12
+    },
+    "w60": {
+     "eligible": 31,
+     "converted": 14,
+     "adj_eligible": 29,
+     "adj_converted": 14
+    },
+    "w90": {
+     "eligible": 31,
+     "converted": 17,
+     "adj_eligible": 29,
+     "adj_converted": 17
+    }
+   },
+   {
+    "month": "2026-04",
+    "n": 27,
+    "refunded": 0,
+    "reached_uc": 21,
+    "w14": {
+     "eligible": 27,
+     "converted": 3,
+     "adj_eligible": 27,
+     "adj_converted": 3
+    },
+    "w30": {
+     "eligible": 27,
+     "converted": 9,
+     "adj_eligible": 27,
+     "adj_converted": 9
+    },
+    "w45": {
+     "eligible": 27,
+     "converted": 11,
+     "adj_eligible": 27,
+     "adj_converted": 11
+    },
+    "w60": {
+     "eligible": 27,
+     "converted": 13,
+     "adj_eligible": 27,
+     "adj_converted": 13
+    },
+    "w90": {
+     "eligible": 27,
+     "converted": 15,
+     "adj_eligible": 27,
+     "adj_converted": 15
+    }
+   },
+   {
+    "month": "2026-05",
+    "n": 37,
+    "refunded": 2,
+    "reached_uc": 25,
+    "w14": {
+     "eligible": 37,
+     "converted": 2,
+     "adj_eligible": 35,
+     "adj_converted": 2
+    },
+    "w30": {
+     "eligible": 37,
+     "converted": 3,
+     "adj_eligible": 35,
+     "adj_converted": 3
+    },
+    "w45": {
+     "eligible": 37,
+     "converted": 8,
+     "adj_eligible": 35,
+     "adj_converted": 8
+    },
+    "w60": {
+     "eligible": 37,
+     "converted": 10,
+     "adj_eligible": 35,
+     "adj_converted": 10
+    },
+    "w90": {
+     "eligible": 37,
+     "converted": 23,
+     "adj_eligible": 35,
+     "adj_converted": 23
+    }
+   },
+   {
+    "month": "2026-06",
+    "n": 57,
+    "refunded": 7,
+    "reached_uc": 42,
+    "w14": {
+     "eligible": 57,
+     "converted": 0,
+     "adj_eligible": 50,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 57,
+     "converted": 14,
+     "adj_eligible": 50,
+     "adj_converted": 14
+    },
+    "w45": {
+     "eligible": 57,
+     "converted": 22,
+     "adj_eligible": 50,
+     "adj_converted": 21
+    },
+    "w60": {
+     "eligible": 57,
+     "converted": 27,
+     "adj_eligible": 50,
+     "adj_converted": 26
+    },
+    "w90": {
+     "eligible": 57,
+     "converted": 36,
+     "adj_eligible": 50,
+     "adj_converted": 35
+    }
+   },
+   {
+    "month": "2026-07",
+    "n": 74,
+    "refunded": 5,
+    "reached_uc": 56,
+    "w14": {
+     "eligible": 74,
+     "converted": 5,
+     "adj_eligible": 69,
+     "adj_converted": 5
+    },
+    "w30": {
+     "eligible": 74,
+     "converted": 26,
+     "adj_eligible": 69,
+     "adj_converted": 26
+    },
+    "w45": {
+     "eligible": 74,
+     "converted": 33,
+     "adj_eligible": 69,
+     "adj_converted": 33
+    },
+    "w60": {
+     "eligible": 74,
+     "converted": 45,
+     "adj_eligible": 69,
+     "adj_converted": 45
+    },
+    "w90": {
+     "eligible": 74,
+     "converted": 52,
+     "adj_eligible": 69,
+     "adj_converted": 52
+    }
+   },
+   {
+    "month": "2026-08",
+    "n": 74,
+    "refunded": 10,
+    "reached_uc": 47,
+    "w14": {
+     "eligible": 74,
+     "converted": 6,
+     "adj_eligible": 64,
+     "adj_converted": 6
+    },
+    "w30": {
+     "eligible": 74,
+     "converted": 24,
+     "adj_eligible": 64,
+     "adj_converted": 24
+    },
+    "w45": {
+     "eligible": 74,
+     "converted": 33,
+     "adj_eligible": 64,
+     "adj_converted": 33
+    },
+    "w60": {
+     "eligible": 74,
+     "converted": 39,
+     "adj_eligible": 64,
+     "adj_converted": 39
+    },
+    "w90": {
+     "eligible": 43,
+     "converted": 22,
+     "adj_eligible": 34,
+     "adj_converted": 22
+    }
+   },
+   {
+    "month": "2026-09",
+    "n": 79,
+    "refunded": 12,
+    "reached_uc": 39,
+    "w14": {
+     "eligible": 79,
+     "converted": 6,
+     "adj_eligible": 67,
+     "adj_converted": 6
+    },
+    "w30": {
+     "eligible": 79,
+     "converted": 17,
+     "adj_eligible": 67,
+     "adj_converted": 17
+    },
+    "w45": {
+     "eligible": 79,
+     "converted": 32,
+     "adj_eligible": 67,
+     "adj_converted": 32
+    },
+    "w60": {
+     "eligible": 44,
+     "converted": 24,
+     "adj_eligible": 43,
+     "adj_converted": 24
+    },
+    "w90": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    }
+   },
+   {
+    "month": "2026-10",
+    "n": 68,
+    "refunded": 14,
+    "reached_uc": 19,
+    "w14": {
+     "eligible": 68,
+     "converted": 8,
+     "adj_eligible": 54,
+     "adj_converted": 7
+    },
+    "w30": {
+     "eligible": 37,
+     "converted": 11,
+     "adj_eligible": 30,
+     "adj_converted": 11
+    },
+    "w45": {
+     "eligible": 8,
+     "converted": 2,
+     "adj_eligible": 6,
+     "adj_converted": 2
+    },
+    "w60": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    },
+    "w90": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    }
+   },
+   {
+    "month": "2026-11",
+    "n": 10,
+    "refunded": 1,
+    "reached_uc": 1,
+    "w14": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    },
+    "w30": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    },
+    "w45": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    },
+    "w60": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    },
+    "w90": {
+     "eligible": 0,
+     "converted": 0,
+     "adj_eligible": 0,
+     "adj_converted": 0
+    }
+   }
+  ]
+ },
+ "reconciliation": [
+  {
+   "check": "pipedrive_reporting_base: one row per deal_id",
+   "ok": true
+  },
+  {
+   "check": "jira_reporting_base: one row per Jira key",
+   "ok": true
+  },
+  {
+   "check": "won_clients_master: one row per deal_id and dupe_check = 1",
+   "ok": true
+  },
+  {
+   "check": "client_events: at most one row per deal x event type",
+   "ok": true
+  },
+  {
+   "check": "client_cash_forecast: one row per won deal, same deals as the master",
+   "ok": true
+  },
+  {
+   "check": "won_clients_master = every won STR Search deal in pipedrive_reporting_base",
+   "ok": true
+  },
+  {
+   "check": "Rebuilt client_events rows that differ from the export",
+   "ok": true
+  },
+  {
+   "check": "client_events 'Deal Created' count",
+   "ok": true
+  },
+  {
+   "check": "client_events 'Client Won' count",
+   "ok": true
+  },
+  {
+   "check": "client_events 'Client Started' count",
+   "ok": true
+  },
+  {
+   "check": "client_events 'Under Contract' count",
+   "ok": true
+  },
+  {
+   "check": "client_events 'Passed Inspection' count",
+   "ok": true
+  },
+  {
+   "check": "client_events 'Property Closed' count",
+   "ok": true
+  },
+  {
+   "check": "client_events 'Client Refunded' count",
+   "ok": true
+  },
+  {
+   "check": "daily_client_activity.clients_won total = 'Client Won' events dated 2024-01-01 to the data date",
+   "ok": true
+  },
+  {
+   "check": "daily_client_activity.clients_started total = 'Client Started' events dated 2024-01-01 to the data date",
+   "ok": true
+  },
+  {
+   "check": "daily_client_activity.clients_went_uc total = 'Under Contract' events dated 2024-01-01 to the data date",
+   "ok": true
+  },
+  {
+   "check": "daily_client_activity.clients_passed_inspection total = 'Passed Inspection' events dated 2024-01-01 to the data date",
+   "ok": true
+  },
+  {
+   "check": "daily_client_activity.properties_closed total = 'Property Closed' events dated 2024-01-01 to the data date",
+   "ok": true
+  },
+  {
+   "check": "daily_client_activity.clients_refunded total = 'Client Refunded' events dated 2024-01-01 to the data date",
+   "ok": true
+  },
+  {
+   "check": "cumulative_net_change on the last day = all starts - all UC in the calendar",
+   "ok": true
+  },
+  {
+   "check": "client_cohort_performance = master rows with client_start_date_source = 'JIRA'",
+   "ok": true
+  },
+  {
+   "check": "signed_up_client = status in the signed-up list (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "active_clients = signed-up minus Refunded / Paused / Additional Service (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "inactive_clients = Refunded / Paused / Additional Service (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "hunting_clients = Client Start / 2 / 4 / 6 / 8 Weeks (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "client_refunded = status Refunded (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "signed = active + inactive",
+   "ok": true
+  },
+  {
+   "check": "client_start_date follows the documented rule (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "Pipedrive Fallback starts equal the won date (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "henry_client = total_oop <= 225,000 (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "days_to_uc = property_uc_date - client_start_date (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "assumed collected + outstanding = deal value (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "split pay: outstanding = 50% when no closing date, else 0 (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "refund-excluded amounts are zero for refunded engagements (rows that differ)",
+   "ok": true
+  },
+  {
+   "check": "Reporting date read from the views",
+   "ok": true
+  }
+ ],
+ "quality": [
+  {
+   "id": "scheduled_closings",
+   "severity": "warning",
+   "title": "Closing dates after the data date",
+   "metric": "6 closings dated after 16 Nov 2026",
+   "impact": "This build counts them as scheduled, not closed: they are left out of CLOSED counts, durations and attainment. Cash figures show them separately."
+  },
+  {
+   "id": "closing_date_open_status",
+   "severity": "info",
+   "title": "Closing date on clients still Under Contract or Passed Inspection",
+   "metric": "12 clients",
+   "impact": "CLOSED counts follow the date field, not the status."
+  },
+  {
+   "id": "latest_uc",
+   "severity": "warning",
+   "title": "Under Contract = latest valid contract, not the first",
+   "metric": "Definition",
+   "impact": "Days to UC measure time to the contract that stands today. Fall-through rates cannot be measured from this version."
+  },
+  {
+   "id": "won_no_jira",
+   "severity": "warning",
+   "title": "Won engagements with no Jira match",
+   "metric": "47 of 876",
+   "impact": "They keep a Pipedrive fallback start date, which is not a confirmed start: they are excluded from starts, durations and cohorts but stay in won counts and the cash model."
+  },
+  {
+   "id": "key_mismatch",
+   "severity": "warning",
+   "title": "Jira key in Pipedrive differs from the matched issue",
+   "metric": "4",
+   "impact": "Flagged as data anomalies; counted with the pd_deal_id match."
+  },
+  {
+   "id": "won_presale_status",
+   "severity": "warning",
+   "title": "Won engagements whose Jira issue is still pre-sale",
+   "metric": "10",
+   "impact": "They count as Client Started events and in cohorts, but not as signed, active or hunting Jira clients."
+  },
+  {
+   "id": "signed_not_won",
+   "severity": "warning",
+   "title": "Signed Jira clients with no won engagement",
+   "metric": "24 of 843",
+   "impact": "They count as signed / active / hunting Jira clients but have no engagement-grain start."
+  },
+  {
+   "id": "hunting_counts",
+   "severity": "info",
+   "title": "Two hunting counts",
+   "metric": "Jira statuses 123 \u00b7 won engagements 108",
+   "impact": "Status-based client counts use the Jira grain; engagement measures use the master."
+  },
+  {
+   "id": "anomalies",
+   "severity": "warning",
+   "title": "Engagements flagged has_data_anomaly",
+   "metric": "14",
+   "impact": "Kept in every count (the SQL reference says never drop anomalous won deals)."
+  },
+  {
+   "id": "payment_default",
+   "severity": "serious",
+   "title": "Payment type looks defaulted to Split Pay",
+   "metric": "Split Pay on 5,999 of 6,005 lost deals",
+   "impact": "The cash model treats every unrecorded engagement as Split Pay, so modeled outstanding balances are an upper bound if some clients paid in full."
+  },
+  {
+   "id": "abnormal_values",
+   "severity": "warning",
+   "title": "Abnormal values excluded from aggregates",
+   "metric": "1 total_oop \u00b7 2 budget \u00b7 1 deals sent \u00b7 5 zero-value wins",
+   "impact": "Excluded from averages and bands; HENRY flags are unaffected (the placeholder is not <= $225K)."
+  },
+  {
+   "id": "henry_unknown",
+   "severity": "warning",
+   "title": "HENRY is unknown for signed clients without total_oop",
+   "metric": "317 of 843 signed clients",
+   "impact": "HENRY shares use clients with a known total_oop as the denominator."
+  },
+  {
+   "id": "refund_proxy",
+   "severity": "warning",
+   "title": "Refunds are a Jira status proxy",
+   "metric": "82 refunded \u00b7 most in Oct 2026 (26)",
+   "impact": "Refund timing can reflect status clean-ups rather than payment dates; refund-adjusted rates drop currently refunded clients from denominators."
+  },
+  {
+   "id": "negative_duration",
+   "severity": "info",
+   "title": "UC dated before the client start",
+   "metric": "1",
+   "impact": "Left out of duration statistics (negative days)."
+  },
+  {
+   "id": "created_plus4",
+   "severity": "info",
+   "title": "Start dates set to created + 4 days",
+   "metric": "26 signed clients",
+   "impact": "Small: affects older clients only."
+  },
+  {
+   "id": "start_rule_change",
+   "severity": "info",
+   "title": "The start date changes meaning on 1 Jun 2026",
+   "metric": "Reporting rule",
+   "impact": "Durations before and after June are measured from different events; compare eras with care."
+  },
+  {
+   "id": "channel_coverage",
+   "severity": "warning",
+   "title": "Lead channel (utm_source) is sparse",
+   "metric": "24% of in-scope deals",
+   "impact": "Channel splits describe tagged deals only."
+  },
+  {
+   "id": "funnel_flags",
+   "severity": "warning",
+   "title": "Funnel flags changed meaning on 27 May 2026",
+   "metric": "Legacy: call booked 28%; New Client Experience: call booked 0%",
+   "impact": "Compare funnel rates within one experience only."
+  },
+  {
+   "id": "pipeline_scope",
+   "severity": "info",
+   "title": "Only the STR Search pipeline is in the reporting base",
+   "metric": "7,969 deals",
+   "impact": "No-show and booked-call counts after June are understated."
+  },
+  {
+   "id": "deals_sent",
+   "severity": "warning",
+   "title": "Deals sent is a current cumulative total",
+   "metric": "592 signed clients with a value",
+   "impact": "Early deal velocity (e.g. properties in the first 14 days) cannot be measured; long searches accumulate more deals by construction."
+  },
+  {
+   "id": "asof",
+   "severity": "good",
+   "title": "Reporting date",
+   "metric": "16 Nov 2026",
+   "impact": "Cohort maturity and elapsed days are measured to this date."
+  }
+ ],
+ "changes_vs_2026_11_12": {
+  "versions": {
+   "old": {
+    "id": "2026-11-12",
+    "data_asof": "2026-11-11"
+   },
+   "new": {
+    "id": "2026-11-16",
+    "data_asof": "2026-11-16"
+   }
+  },
+  "records": {
+   "jira_old": 1556,
+   "jira_new": 1591,
+   "jira_both": 1535,
+   "dropped": {
+    "n": 21,
+    "signed": 21,
+    "by_status": {
+     "Refunded": 12,
+     "Paused": 3,
+     "Content Pulled": 3,
+     "CLOSED": 2,
+     "8 Weeks": 1
+    },
+    "created_2024": 15
+   },
+   "added": {
+    "n": 56,
+    "created_before_old_asof": 41,
+    "by_status": {
+     "New Clients": 34,
+     "8 Weeks": 6,
+     "Client Start": 5,
+     "Services Declined": 5,
+     "Onboarding Completed": 3,
+     "6 Weeks": 1,
+     "4 Weeks": 1,
+     "Refunded": 1
+    }
+   },
+   "signed_changes": {
+    "was_signed_now_not": 1,
+    "newly_signed": 1
+   }
+  },
+  "start_date": {
+   "signed_compared": 821,
+   "same": 467,
+   "differ": 354,
+   "pre_june_plus4": 25,
+   "pre_june_other": 0,
+   "post_june": {
+    "n": 357,
+    "differ": 329,
+    "later": 197,
+    "earlier": 132,
+    "median_shift": 2.0,
+    "p10": -8.0,
+    "p90": 22.0
+   }
+  },
+  "under_contract": {
+   "compared": 493,
+   "same": 452,
+   "moved": 41,
+   "moved_later": 41,
+   "median_move_days": 20.0,
+   "max_move_days": 107.0,
+   "new_only": 7,
+   "old_only": 0,
+   "old_had_repeat_contracts": 42
+  },
+  "closing": {
+   "compared": 429,
+   "same": 314,
+   "differ": 115,
+   "earlier": 104,
+   "later": 11,
+   "median_diff_days": -5.0,
+   "new_only": 20,
+   "scheduled_after_asof": 6
+  },
+  "headline": {
+   "old": {
+    "signed": 850,
+    "active": 644,
+    "inactive": 206,
+    "uc_median": 36.0,
+    "uc_mean": 53.75,
+    "uc_n": 499,
+    "closed_median": 77.0,
+    "closed_mean": 96.31,
+    "closed_n": 432,
+    "km_uc": 77.0,
+    "km_closed": 127.0,
+    "active_uc_share": 0.7205,
+    "active_closed_share": 0.6661
+   },
+   "new": {
+    "signed": 843,
+    "active": 648,
+    "inactive": 195,
+    "hunting": 123,
+    "uc_median": 37.5,
+    "uc_mean": 56.17,
+    "uc_n": 492,
+    "closed_median": 73.0,
+    "closed_mean": 92.82,
+    "closed_n": 438,
+    "km_uc": 76.0,
+    "km_closed": 117.0,
+    "active_uc_share": 0.716,
+    "active_closed_share": 0.6759
+   },
+   "populations": {
+    "old": "Q1: every Jira issue with a first UC / CLOSED date; KM and Q2: signed-up Jira issues",
+    "new": "Q1 and KM: won engagements with a confirmed Jira start; Q2: Jira issues by reporting-layer flags"
+   }
+  },
+  "monthly": [
+   {
+    "month": "2026-01",
+    "starts_old": 31,
+    "starts_new": 35,
+    "uc_old": 13,
+    "uc_new": 12,
+    "closed_old": 13,
+    "closed_new": 8,
+    "gap_old": 18,
+    "gap_new": 23
+   },
+   {
+    "month": "2026-02",
+    "starts_old": 23,
+    "starts_new": 24,
+    "uc_old": 13,
+    "uc_new": 12,
+    "closed_old": 9,
+    "closed_new": 10,
+    "gap_old": 10,
+    "gap_new": 12
+   },
+   {
+    "month": "2026-03",
+    "starts_old": 32,
+    "starts_new": 31,
+    "uc_old": 22,
+    "uc_new": 24,
+    "closed_old": 14,
+    "closed_new": 14,
+    "gap_old": 10,
+    "gap_new": 7
+   },
+   {
+    "month": "2026-04",
+    "starts_old": 28,
+    "starts_new": 27,
+    "uc_old": 29,
+    "uc_new": 28,
+    "closed_old": 22,
+    "closed_new": 22,
+    "gap_old": -1,
+    "gap_new": -1
+   },
+   {
+    "month": "2026-05",
+    "starts_old": 34,
+    "starts_new": 37,
+    "uc_old": 21,
+    "uc_new": 19,
+    "closed_old": 26,
+    "closed_new": 26,
+    "gap_old": 13,
+    "gap_new": 18
+   },
+   {
+    "month": "2026-06",
+    "starts_old": 65,
+    "starts_new": 57,
+    "uc_old": 17,
+    "uc_new": 17,
+    "closed_old": 25,
+    "closed_new": 25,
+    "gap_old": 48,
+    "gap_new": 40
+   },
+   {
+    "month": "2026-07",
+    "starts_old": 92,
+    "starts_new": 74,
+    "uc_old": 44,
+    "uc_new": 43,
+    "closed_old": 14,
+    "closed_new": 17,
+    "gap_old": 48,
+    "gap_new": 31
+   },
+   {
+    "month": "2026-08",
+    "starts_old": 82,
+    "starts_new": 74,
+    "uc_old": 55,
+    "uc_new": 52,
+    "closed_old": 43,
+    "closed_new": 43,
+    "gap_old": 27,
+    "gap_new": 22
+   },
+   {
+    "month": "2026-09",
+    "starts_old": 76,
+    "starts_new": 79,
+    "uc_old": 59,
+    "uc_new": 60,
+    "closed_old": 44,
+    "closed_new": 40,
+    "gap_old": 17,
+    "gap_new": 19
+   },
+   {
+    "month": "2026-10",
+    "starts_old": 52,
+    "starts_new": 68,
+    "uc_old": 58,
+    "uc_new": 55,
+    "closed_old": 64,
+    "closed_new": 64,
+    "gap_old": -6,
+    "gap_new": 13
+   },
+   {
+    "month": "2026-11",
+    "starts_old": 9,
+    "starts_new": 10,
+    "uc_old": 17,
+    "uc_new": 26,
+    "closed_old": 10,
+    "closed_new": 15,
+    "gap_old": -8,
+    "gap_new": -16
+   }
+  ]
+ }
+}

@@ -1,3 +1,19 @@
+# LLM context — STRSearch Business Data Explorer (two reporting versions)
+
+Two versions: **16 Nov 2026** (default, `docs/2026-11-16/`, Supabase reporting layer, data as of 2026-11-16; summary in `docs/2026-11-16/data/summary.json`) and **12 Nov 2026** (archived, `docs/2026-11-12/`, DIM extracts, data as of 2026-11-11). Record keys, deal ids and staff names are pseudonyms; no personal data is published. Figures differ by design between versions; `VERSIONS.md` explains why.
+
+## 16 Nov 2026 definitions
+client_start_date = due date for Jira issues created before 1 Jun 2026 (else created + 4 days), Pipedrive won date from 1 Jun 2026; Under Contract = latest valid contract (no first-contract history); CLOSED = closing date up to the data date (later dates are scheduled); durations use won engagements with a confirmed Jira start; client counts use the reporting-layer flags (Active includes closed and post-close clients; hunting = still searching); monthly throughput = daily_client_activity (net change is not a backlog); matured cohorts per client_cohort_performance; HENRY = total_oop <= $225K (recorded mostly at purchase); cash = modeled, not receipts.
+
+## 16 Nov 2026 headline figures
+- Pipedrive: 7,662 in-scope deals, 876 won engagements (829 with a Jira match, 825 confirmed starts, 51 Pipedrive-fallback starts).
+- Jira: 1,591 issues; 843 signed-up = 648 Active + 195 Inactive; 123 hunting; 347 pre-sale and 401 declined prospects.
+- Key question 1 (confirmed starts): median 37.5 days to Under Contract (mean 56.17), 73 to CLOSED (mean 92.82); Kaplan–Meier 76 / 117 days.
+- Key question 2 (Jira issues): 464 of 648 Active clients reached UC, 438 CLOSED.
+- Reconciliation: 36/36 checks against the export and the SQL reference.
+
+## 12 Nov 2026 version (archived). Everything below describes it, unchanged.
+
 # Context for AI assistants
 
 You are looking at an anonymized analytics build for **STRSearch**, a company that helps clients buy short-term-rental (STR) properties. The figures are a snapshot as of **2026-11-11**. Use only the numbers here and in `docs/data/`. Do not invent revenue, cash, CAC or historical events: the data does not contain them.
