@@ -13,7 +13,8 @@
       const asof = SX.data.asofDay;
       const row = el('div', { class: 'kpi-row' });
       SX.ui.kpi(row, { label: 'Signed-up clients', value: U.fmtInt(sig.length), sub: U.fmtInt(act.length) + ' Active · ' + U.fmtInt(sig.length - act.length) + ' Inactive' });
-      SX.ui.kpi(row, { label: 'Hunting now', value: U.fmtInt(searching.length), sub: 'Client Start / 2–8 Weeks · median ' + U.fmtInt(U.median(searching.map(j => asof - j.start_d))) + ' days since start' });
+      const dated = searching.filter(j => j.start_d != null);   // no start date (no won deal linked): counted, not aged
+      SX.ui.kpi(row, { label: 'Hunting now', value: U.fmtInt(searching.length), sub: 'Client Start / 2–8 Weeks · median ' + U.fmtInt(U.median(dated.map(j => asof - j.start_d))) + ' days since start (' + U.fmtInt(dated.length) + ' with a start date)' });
       SX.ui.kpi(row, { label: 'Under contract now', value: U.fmtInt(act.filter(j => j.group === 'Under contract').length), sub: 'Under Contract or Passed Inspection' });
       SX.ui.kpi(row, { label: 'Refunded / Paused', value: U.fmtInt(sig.filter(j => j.status === 'Refunded').length) + ' / ' + U.fmtInt(sig.filter(j => j.status === 'Paused').length), sub: U.fmtPct(U.ratio(sig.filter(j => j.status === 'Refunded').length, sig.length), 1) + ' of signed-up clients refunded' });
       SX.ui.kpi(row, { label: 'Pre-sale prospects in Jira', value: U.fmtInt(all.length - sig.length), sub: 'New Clients, Onboarding Completed, Services Declined' });
@@ -45,7 +46,7 @@
       id: 'acq-aging', title: 'Hunting clients: days since client start date (acquisition ageing)', subtitle: 'Active clients in Client Start / 2 / 4 / 6 / 8 Weeks · stacked by status', height: 430,
       render({ t }) {
         const asof = SX.data.asofDay;
-        const rows = SX.model.jira({ population: 'active' }).filter(j => j.hunting);
+        const all = SX.model.jira({ population: 'active' }).filter(j => j.hunting), rows = all.filter(j => j.start_d != null);   // undated clients are counted below, not aged
         if (!rows.length) return { empty: true };
         const bands = [[0, 30, '0–30'], [31, 60, '31–60'], [61, 90, '61–90'], [91, 180, '91–180'], [181, 365, '181–365'], [366, 1e6, '365+']];
         const sts = ['Client Start', '2 Weeks', '4 Weeks', '6 Weeks', '8 Weeks'].filter(s => rows.some(j => j.status === s));
@@ -55,7 +56,7 @@
           option: C.base(t, { legend: C.legend(t), grid: { left: 6, right: 12, top: 40, bottom: 26, containLabel: true }, tooltip: Object.assign(C.tooltipBase(t), { formatter: C.axisTip(v => U.fmtInt(v) + ' clients', { title: p => U.escapeHtml(p.axisValueLabel) + ' days in search' }) }),
             xAxis: C.catAxis(t, bands.map(b => b[2]), { name: 'days since effective start', nameLocation: 'middle', nameGap: 26, nameTextStyle: { color: t.label, fontSize: 11 } }), yAxis: C.valAxis(t), series }),
           table: { columns: [{ key: 'b', label: 'Days' }].concat(sts.map(s => ({ key: s, label: s, num: true }))), rows: bands.map((b, i) => Object.assign({ b: b[2] }, Object.fromEntries(sts.map((s, si) => [s, series[si].data[i]])))) },
-          foot: U.fmtInt(rows.filter(j => asof - j.start_d > 180).length) + ' searching clients started more than 180 days ago. “8 Weeks” works as a catch-all for long searches, so these clients may need attention.',
+          foot: U.fmtInt(rows.filter(j => asof - j.start_d > 180).length) + ' searching clients started more than 180 days ago. “8 Weeks” works as a catch-all for long searches, so these clients may need attention.' + (all.length > rows.length ? ' ' + U.fmtInt(all.length - rows.length) + ' hunting clients have no start date (no won deal linked) and are not aged.' : ''),
         };
       },
     });
@@ -189,7 +190,7 @@
       tbl.textContent = '';
       const rows = SX.model.jira({ population: 'signed' }), asof = SX.data.asofDay;
       const g2 = U.groupBy(rows, j => j[sel.dim] == null ? 'Unknown / unlinked' : j[sel.dim]);
-      const data = Array.from(g2.entries()).map(([k, arr]) => { const m = arr.filter(j => asof - j.start_d >= 180);
+      const data = Array.from(g2.entries()).map(([k, arr]) => { const m = arr.filter(j => j.start_d != null && asof - j.start_d >= 180);
         return { k, n: arr.length, uc: arr.filter(j => j.uc_d != null).length / arr.length, cl: arr.filter(j => j.closed_d != null).length / arr.length, rf: arr.filter(j => j.status === 'Refunded').length / arr.length,
           m180: m.length ? m.filter(j => j.uc_d != null && j.uc_d - j.start_d <= 180).length / m.length : null, nm: m.length }; }).filter(x => x.n >= 3);
       tbl.append(SX.ui.table({ sortKey: 'n', columns: [{ key: 'k', label: 'Value' }, { key: 'n', label: 'Clients', num: true },

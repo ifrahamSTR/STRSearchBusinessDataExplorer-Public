@@ -44,9 +44,9 @@
     });
     SX.live(r, b => {
       const hun = SX.model.jira({ population: 'hunting', ignorePeriod: true }), asof = SX.data.asofDay;
-      const age = hun.map(j => asof - j.start_d).filter(x => !Number.isNaN(x));
+      const age = hun.filter(j => j.start_d != null).map(j => asof - j.start_d);   // clients without a start date are counted, not aged
       b.append(el('div', { class: 'callout mt-0' }, [el('h4', {}, [SX.term('backlog', 'The actual backlog')]),
-        el('p', {}, [el('b', { text: U.fmtInt(hun.length) + ' clients are hunting today' }), ' (Client Start to 8 Weeks), a median ' + U.fmtInt(U.median(age)) + ' days since their start; ' + U.fmtInt(age.filter(x => x > 90).length) + ' have waited more than 90 days.']),
+        el('p', {}, [el('b', { text: U.fmtInt(hun.length) + ' clients are hunting today' }), ' (Client Start to 8 Weeks). The ' + U.fmtInt(age.length) + ' with a start date have waited a median ' + U.fmtInt(U.median(age)) + ' days; ' + U.fmtInt(age.filter(x => x > 90).length) + ' more than 90 days' + (hun.length > age.length ? '; ' + U.fmtInt(hun.length - age.length) + ' have no start date (no won deal linked).' : '.')]),
         el('p', { class: 'small muted', text: 'Use this count, not the monthly net change, for the backlog: net change (starts − UC) compares different clients and leaves out pauses, refunds and restarts, so it is never added up. Respects the package, channel, rep and experience filters.' }),
         el('a', { href: '#cohorts', text: 'Compare starts on the same clock in the cohort builder →' })]));
     });

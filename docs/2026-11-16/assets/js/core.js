@@ -310,7 +310,9 @@
   };
 
   /* ---------------------------------------------------------------- model */
-  function inRange(d, r) { return d != null && (r.from == null || d >= r.from) && (r.to == null || d <= r.to); }
+  /* 'All time' (no bounds) keeps records without the date (e.g. hunting Jira issues with no won deal linked), so its counts equal the
+     reference figures (signed-up 843, hunting 123); any bounded period needs the date. */
+  function inRange(d, r) { return (r.from == null && r.to == null) || (d != null && (r.from == null || d >= r.from) && (r.to == null || d <= r.to)); }
   function dimMatch(rowVal, sel) { return sel === 'all' || (rowVal == null ? 'Unknown' : rowVal) === sel; }
 
   SX.model = {

@@ -23,6 +23,7 @@ Definitions: **onboarding budget** = the onboarding form's "Total out-of-pocket 
 - Cash bridge at the Cash Forecast defaults: $1,360,698.01 service + $896,752.34 affiliate − $461,303.78 refunds = $1,796,146.57.
 - Cross-checks against the Executive Report for the same snapshot: 21/21; browser parity 885/885. All figures: `docs/2026-11-16/data/summary.json` (`expected.budget`, `growth`, `cash_bridge`, `definitions.terms`).
 
+- **Reconciliation fix (18 Nov 2026, with the Executive Report's L10 update)**: "All time" now keeps Jira issues without a client start date, so the default views equal the reference figures and the report (843 signed-up, 648 Active, 123 hunting, 108 paused, 82 refunded; attainment 72% / 68%), where they had shown 826 / 635 / 110. Hunting ages skip the 13 hunting clients with no start date (no won deal linked) instead of aging them from 1970: the 110 with a start date have waited a median 59 days and 33 more than 90 (previously shown as 68 days and 46). Any bounded period still needs the date. Data file unchanged; SX.parity 885/885.
 ## 12 Nov 2026 version (archived). Everything below describes it, unchanged.
 
 # Context for AI assistants

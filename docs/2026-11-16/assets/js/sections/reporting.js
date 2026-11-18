@@ -37,9 +37,9 @@
     });
     SX.live(n1, box => {
       const ex = SX.data.expected, j = SX.model.jira({ population: 'hunting' });
-      const asof = SX.data.asofDay, age = j.map(x => asof - x.start_d).filter(x => !Number.isNaN(x));
+      const asof = SX.data.asofDay, age = j.filter(x => x.start_d != null).map(x => asof - x.start_d);   // undated clients are counted, not aged
       box.append(el('div', { class: 'callout mt-0' }, [el('h4', { text: 'Hunting today' }),
-        el('p', { text: U.fmtInt(j.length) + ' Jira clients are hunting (Client Start to 8 Weeks); median ' + U.fmtInt(U.median(age)) + ' days since their start, ' + U.fmtInt(age.filter(x => x > 90).length) + ' past 90 days. The SQL reference’s engagement count (hunting and a Jira match on a won deal) is ' + U.fmtInt(ex.engagements.hunting_official) + '.' }),
+        el('p', { text: U.fmtInt(j.length) + ' Jira clients are hunting (Client Start to 8 Weeks); the ' + U.fmtInt(age.length) + ' with a start date: median ' + U.fmtInt(U.median(age)) + ' days since their start, ' + U.fmtInt(age.filter(x => x > 90).length) + ' past 90 days. The SQL reference’s engagement count (hunting and a Jira match on a won deal) is ' + U.fmtInt(ex.engagements.hunting_official) + '.' }),
         el('p', { class: 'small muted', text: 'There is no historical snapshot of hunting clients, so past backlog levels cannot be reconstructed; the running total is a flow proxy only.' })]));
     });
 
