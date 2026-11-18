@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const SX = window.SX, U = SX.util;
-  const ORDER = ['overview', 'how', 'questions', 'sales', 'acquisition', 'lifecycle', 'reporting', 'health', 'explorer', 'definitions'];
+  const ORDER = ['overview', 'how', 'questions', 'budget', 'cohorts', 'sales', 'acquisition', 'lifecycle', 'reporting', 'health', 'explorer', 'definitions'];
 
   function boot() {
     SX.theme.init();
@@ -19,7 +19,7 @@
       const fn = SX.sections && SX.sections[id];
       if (!root || !fn) return;
       root.textContent = '';
-      try { fn(root); }
+      try { fn(root); if (SX.extend && SX.extend[id]) SX.extend[id](root); }
       catch (e) {
         console.error('[SX] section failed:', id, e);
         root.append(U.el('div', { class: 'callout callout--critical' }, [U.el('h4', { text: 'This section failed to render' }), U.el('p', { text: e.message })]));

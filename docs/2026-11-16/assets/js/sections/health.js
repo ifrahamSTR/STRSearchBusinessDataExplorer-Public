@@ -4,7 +4,7 @@
   const SX = window.SX, U = SX.util, C = SX.charts, el = U.el;
 
   SX.sections.health = function (root) {
-    SX.head(root, 'health', 'Section 7 · Data health & trust', 'What the data can support, and where it needs care',
+    SX.head(root, 'health', 'Section 9 · Data health & trust', 'What the data can support, and where it needs care',
       'Checks run on every build. Severity reflects the impact on business metrics. Expand a check to see the affected Jira keys or deal IDs, so they can be fixed at source.');
     const order = { critical: 0, serious: 1, warning: 2, info: 3, good: 4 };
     const q = SX.data.quality.slice().sort((a, b) => order[a.severity] - order[b.severity]);
@@ -37,19 +37,20 @@
       ['Win rate and sales cycle', 'good', 'Supported, with maturity caveat', 'Use matured cohorts; the sales cycle is short compared with the acquisition clock.'],
       ['Stage-to-stage conversion', 'critical', 'Not supported', 'Only the current stage is extracted. A stage-history extract is needed.'],
       ['Package / payment mix', 'warning', 'Partial', 'Package filled for most wins. Payment type is defaulted to Split Pay when blank; only a minority of deals carry a recorded value.'],
-      ['Time to UC / CLOSED', 'good', 'Supported, with caveats', 'From client_start_date to the latest valid UC and the closing date. No first-contract history, so fall-through cannot be measured.'],
+      ['Time to UC / CLOSED', 'good', 'Supported, with caveats', 'From client_start_date to the latest valid UC and the closing date. Fall-through is evidenced only partly (12 documented fall-out addresses; status evidence for the rest): see Engagements.'],
+      ['Budget performance', 'good', 'Supported since 20 Apr 2026', 'Onboarding-form capital range (upper end) matched to 394 of 409 confirmed starts since the form went live; earlier clients show as Not recorded. Jira total_oop (HENRY) is recorded mostly at purchase.'],
       ['Conversion to UC / CLOSED', 'good', 'Supported as matured cohorts', 'client_cohort_performance windows (14–90 days), gross and refund-excluded; snapshot shares (Q2) need the cohort view beside them.'],
       ['Refund rate', 'warning', 'Partial', 'Current status Refunded with the status-change date; no refund amounts or transactions.'],
-      ['Revenue, cash collected, receivables', 'warning', 'Modeled only', 'client_cash_forecast models contractual cash from deal value and payment type. Not receipts or accounting revenue; no QuickBooks / Stripe data.'],
+      ['Revenue, cash collected, receivables', 'warning', 'Modeled', 'client_cash_forecast models contractual cash from deal value and payment type; the Cash Forecast adds expected collections, affiliate revenue and refunds (bridge in Engagements).'],
       ['CAC / channel ROI', 'critical', 'Not yet', 'Ads spend, Rabbu cost and GHL are in separate workbooks, not joined here.'],
-      ['Affiliate / referral income', 'warning', 'Not loaded', 'Brokerage, lending and Cribs tracking sheets exist and look fresh. A candidate for the next phase.'],
+      ['Affiliate / referral income', 'warning', 'Partial', 'Cribs tracker (handoff by address) and brokerage / lender / affiliate records (closing evidence) are used; affiliate amounts are modeled in the Cash Forecast.'],
     ];
     root.append(SX.ui.table({ sortable: false, columns: [{ key: 'a', label: 'Metric' }, { key: 'b', label: 'Status', html: (v, row) => SX.ui.status(row.s, v) }, { key: 'c', label: 'Note' }], rows: sup.map(([a, s, b, c]) => ({ a, s, b, c })) }));
   };
 
   /* ------------------------------------------------------------ Explorer */
   SX.sections.explorer = function (root) {
-    SX.head(root, 'explorer', 'Section 8 · Record explorer', 'Inspect the de-identified records behind every chart',
+    SX.head(root, 'explorer', 'Section 10 · Record explorer', 'Inspect the de-identified records behind every chart',
       'One row per Jira issue or STR Search deal, already filtered by the bar above. No names, emails, phones or addresses are included. ' + (SX.data.meta.anonymized ? 'In this public build, Jira keys, deal IDs and staff names are replaced with stable pseudonyms (J0001, D0001, Rep 01, Lead 01).' : 'Keys can be looked up in Jira and Pipedrive by people who have access.'));
     const v = { tab: 'jira', q: '', page: 0 };
     const tools = el('div', { class: 'explorer-tools' });

@@ -6,7 +6,7 @@
   const SX = window.SX, U = SX.util, C = SX.charts, el = U.el;
 
   SX.sections.reporting = function (root) {
-    SX.head(root, 'reporting', 'Section 6 · Engagements, cohorts & cash', 'One row per won deal: flows, cohorts, refunds and modeled cash',
+    SX.head(root, 'reporting', 'Section 8 · Engagements, repeats, fall-through & cash', 'One row per won deal: flows, cohorts, refunds and modeled cash',
       'won_clients_master keeps every won STR Search deal (refunds, repeats and deals without a Jira match included). Flows are counted by event date; cohorts by client start; cash is modeled from deal value and payment type, not collected.');
 
     /* ------------------------------------------------ net flow */

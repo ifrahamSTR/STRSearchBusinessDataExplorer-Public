@@ -108,7 +108,7 @@
       el('ul', {}, [
         el('li', { text: 'Population: won engagements with a confirmed Jira start (' + U.fmtInt(ex.confirmed_starts) + '). The ' + U.fmtInt(ex.fallback) + ' Pipedrive fallback starts are not confirmed starts and are left out.' }),
         el('li', { text: 'Averages cover clients who reached the milestone. Slow or stalled clients are not in them yet, so compare the Kaplan-Meier day-50% line.' }),
-        el('li', { text: 'Under Contract is the latest valid contract. The reporting layer keeps no first-contract history, so fall-through cannot be measured here.' }),
+        el('li', {}, ['Under Contract is the latest valid contract, so a client whose first contract fell through counts to the later one. Fall-through evidence from the 12 Nov extract: ', el('a', { href: '#fallthrough', text: 'Engagements →' })]),
         el('li', { text: U.fmtInt(ex.scheduled_closings) + ' closing dates fall after the data date; they are treated as scheduled, not closed.' }),
       ])])]));
     function refresh1() { drawTiles1(); hist.invalidate(); km.invalidate(); qtr.invalidate(); }
@@ -280,6 +280,30 @@
     const st = SX.calc.monthCounts(coh, 'start'), um = SX.calc.monthCounts(D.eng, 'uc'), cm = SX.calc.monthCounts(D.eng, 'closed');
     const bad = e.q3.filter(r => (st.get(r.month) || 0) !== r.started || (um.get(r.month) || 0) !== r.uc || (cm.get(r.month) || 0) !== r.closed).length;
     chk('q3.monthly_mismatches', bad, 0);
+    // budget view (added 18 Nov 2026): every group metric and like-for-like comparison = pipeline/budget.py
+    const eb = e.budget;
+    if (eb && SX.budget) {
+      const B = SX.budget, defs = B.defs(), rows = D.eng.filter(x => x.confirmed_start);
+      ['cmp', 'strict', 'band', 'henry'].forEach(k => {
+        const res = B.all(rows, defs[k]);
+        eb.groups[k].forEach(pg => {
+          const m = res.metrics.get(pg.label) || B.metrics([]), p = 'budget.' + k + '.' + pg.label + '.';
+          chk(p + 'n', m.n, pg.n);
+          ['uc14', 'uc30', 'uc45', 'uc60', 'uc90', 'cl60', 'cl90', 'cl120', 'rf14', 'rf30', 'rf60', 'rf90'].forEach(w => { chk(p + w + '.k', m[w].k, pg[w].k); chk(p + w + '.eligible', m[w].eligible, pg[w].eligible); });
+          ['recorded', 'uc_to_close', 'scenario'].forEach(s => { chk(p + s + '.n', m[s].n, pg[s].n); chk(p + s + '.mean', m[s].mean, pg[s].mean); chk(p + s + '.median', m[s].median, pg[s].median); });
+          chk(p + 'km_uc', m.km_uc, pg.km_uc); chk(p + 'km_closed', m.km_closed, pg.km_closed);
+          chk(p + 'stages', JSON.stringify(Object.entries(m.stages).sort()), JSON.stringify(Object.entries(pg.stages).sort()));
+          chk(p + 'hunting_wait.median', m.hunting_wait.median, pg.hunting_wait.median);
+        });
+      });
+      Object.entries(eb.mh).forEach(([k, pm]) => {
+        const def = defs[k === 'ends' ? 'strict' : k], prep = B.prep(rows);
+        [['uc', 'duc'], ['closed', 'dcl'], ['refunded', 'drf']].forEach(([o, key]) => pm[o].forEach(pr => {
+          const js = B.mh(prep, def, pm.a, pm.b, key, pr.w), p = 'budget.mh.' + k + '.' + o + pr.w + '.';
+          chk(p + 'diff', js.diff, pr.diff); chk(p + 'lo', js.lo, pr.lo); chk(p + 'hi', js.hi, pr.hi); chk(p + 'strata', js.strata, pr.strata);
+        }));
+      });
+    }
     return { ok: out.every(x => x.ok), checks: out };
   };
 })();

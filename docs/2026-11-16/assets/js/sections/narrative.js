@@ -107,6 +107,13 @@
     card('Key question 2', U.fmtPct(U.ratio(ex.q2.active_uc, ex.q2.active)) + ' of Active clients reached UC', U.fmtPct(U.ratio(ex.q2.active_closed, ex.q2.active)) + ' reached CLOSED (' + U.fmtInt(ex.q2.active) + ' Active Jira clients, of whom ' + U.fmtInt(ex.q2.hunting) + ' are hunting).', '#q2');
     card('Pace', (q.net_client_change >= 0 ? '+' : '') + U.fmtInt(q.net_client_change) + ' net clients in ' + U.fmtMonth(q.month), U.fmtInt(q.started) + ' confirmed starts against ' + U.fmtInt(q.uc) + ' Under Contract events that month (calendar throughput, not a backlog).', '#q3');
     card('Data caution', 'Some fields are recorded only at purchase', 'total_oop, purchase price and deals sent are mostly filled once a client goes under contract, so they cannot explain speed without survivorship bias.', '#health');
+    const eb = ex.budget;
+    if (eb && eb.groups && eb.mh) {
+      const a = eb.groups.cmp[0], b = eb.groups.cmp[1], m = eb.mh.cmp.uc[0], rf = eb.mh.cmp.refunded[1];
+      const sh = c => U.fmtPct(c.eligible ? c.k / c.eligible : null, 1), pt = x => (x > 0 ? '+' : x < 0 ? '−' : '±') + Math.abs(100 * x).toFixed(1);
+      card('Budget', 'First 14 days: ' + sh(a.uc14) + ' up to $250K vs ' + sh(b.uc14) + ' above', 'Like-for-like (same start month, experience and start rule): ' + pt(m.diff) + ' pts (95% ' + pt(m.lo) + ' to ' + pt(m.hi) + '). Where they differ: refunds within 30 days, ' + pt(rf.diff) + ' pts.', '#budget');
+    }
+    card('Cohort builder', 'Compare any groups on the same clock', 'Pick an entry event and dates, split by budget, channel, package, rep, lead, experience or first vs repeat search, and read outcomes within N days with eligible denominators.', '#cohorts');
     root.append(t);
   };
 
@@ -174,7 +181,7 @@
   /* ------------------------------------------------------------ Definitions */
   SX.sections.definitions = function (root) {
     const D = SX.data, defs = D.defs, ch = D.raw.changes;
-    head(root, 'definitions', 'Section 9 · Definitions', 'Definitions, sources and what changed since 12 Nov 2026',
+    head(root, 'definitions', 'Section 11 · Definitions', 'Definitions, sources and what changed since 12 Nov 2026',
       'The reporting layer’s SQL reference (dated ' + U.fmtDate(defs.sql_reference.dated) + ') is authoritative for this version. Every rule below is re-checked against the export on each build.');
     const sm = defs.status_meta, st = defs.statuses;
     const rows = Object.keys(sm).map(s => ({ s, g: sm[s].group, o: sm[s].order, sig: st.signed_up.includes(s), act: st.active.includes(s), hun: st.hunting.includes(s), m: sm[s].meaning }));

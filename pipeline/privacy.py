@@ -2,8 +2,10 @@
 
 Only the columns listed in EXPORT are written, so a new column in the source can never leak by accident.
 Never exported at record level: names, e-mails, phone numbers, addresses, URLs, listing links, free text,
-purchase prices, budgets, out-of-pocket capital and exact capital amounts (only coarse capital bands and the
-official HENRY flag leave the pipeline). --anonymize additionally replaces Jira keys, Pipedrive deal IDs and
+purchase prices, exact budgets, out-of-pocket capital and exact capital amounts (only coarse bands leave the pipeline:
+Pipedrive capital bands, the official HENRY flag, and since 18 Nov 2026 the onboarding-form capital range the client
+selected, read at its upper end, and the form's offer-experience band). Clients are pseudonymous ids (C0001 for won
+deals, JC0001 for Jira) derived from e-mails inside the pipeline; no e-mail or hash leaves it. --anonymize additionally replaces Jira keys, Pipedrive deal IDs and
 staff names with stable pseudonyms (J0001, D0001, Rep 01, Setter 01, Lead 01).
 """
 from __future__ import annotations
@@ -16,7 +18,8 @@ EXPORT = {
                  "product", "payment", "payment_recorded", "experience", "rep", "setter", "channel", "capital_band",
                  "call_booked", "no_show", "pd_qualified", "services_engaged", "onboarding_scheduled", "onboarding_completed",
                  "contract_in_process", "conversion_exclusion", "offline_won_deal", "repeat_client", "keep", "in_scope",
-                 "excl_reason", "jira_key", "has_jira", "days_to_win"],
+                 "excl_reason", "jira_key", "has_jira", "days_to_win",
+                 "client", "search_no", "search_kind", "budget_band", "budget_cmp", "budget_strict", "offers", "audit"],
         "dates": ["created", "won_date", "lost_date"],
     },
     "jira": {
@@ -25,7 +28,9 @@ EXPORT = {
                  "days_pi", "days_closed", "henry", "oop_known", "deals_sent", "deals_sent_invalid", "deal_number_purchased",
                  "acq_lead", "confidence_call", "agent_pref", "agent_pref_adj", "lender_pref", "lender_pref_adj", "cribs",
                  "cribs_adj", "lender_cat", "designer_cat", "deal_id", "pd_found", "pd_status", "pd_won_date", "pd_created",
-                 "pd_stage", "pd_product", "pd_value", "pd_payment_recorded", "pd_experience", "pd_rep", "pd_lost_reason"],
+                 "pd_stage", "pd_product", "pd_value", "pd_payment_recorded", "pd_experience", "pd_rep", "pd_lost_reason",
+                 "stage", "fallout", "client", "purchase_no", "client_searches", "client_purchases", "cribs_tracker",
+                 "budget_band", "budget_upper", "budget_open", "budget_cmp", "budget_strict", "offers"],
         "dates": ["created", "due", "start", "refund_date", "uc", "pi", "closed", "closed_raw", "confidence_call",
                   "pd_won_date", "pd_created"],
     },
@@ -41,13 +46,15 @@ EXPORT = {
                  "cash_assumed_second_cash_collected", "cash_outstanding_cash_balance", "cash_has_outstanding_balance",
                  "cash_assumed_total_cash_collected", "cash_initial_collection_month", "cash_second_collection_month",
                  "cash_has_payment_anomaly", "cash_refund_excluded_assumed_cash_collected",
-                 "cash_refund_excluded_outstanding_cash_balance", "cash_second_on_scheduled_close"],
+                 "cash_refund_excluded_outstanding_cash_balance", "cash_second_on_scheduled_close",
+                 "budget_band", "budget_upper", "budget_open", "budget_cmp", "budget_strict", "offers", "client", "client_deals",
+                 "search_no", "search_kind", "audit", "audit_label", "cash_group", "stage", "fallout", "purchase_no", "cribs_tracker"],
         "dates": ["deal_created", "won_date", "start", "refund_date", "uc", "pi", "closed", "closed_raw",
                   "cash_initial_collection_month", "cash_second_collection_month"],
     },
 }
 
-NEVER = ["oop", "budget", "purchase_price", "capital_min", "jira_key_pd", "deal_name", "deal_url", "jira_url",
+NEVER = ["oop", "budget", "purchase_price", "cap_label", "pid", "email", "client_email", "capital_min", "jira_key_pd", "deal_name", "deal_url", "jira_url",
          "address_under_contract", "client_listing_url", "realtor_used", "lender_used", "confidence_call_host",
          "pd_deal_attribution", "utm_campaign", "utm_content"]
 

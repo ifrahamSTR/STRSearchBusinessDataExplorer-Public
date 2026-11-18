@@ -12,6 +12,17 @@ client_start_date = due date for Jira issues created before 1 Jun 2026 (else cre
 - Key question 2 (Jira issues): 464 of 648 Active clients reached UC, 438 CLOSED.
 - Reconciliation: 36/36 checks against the export and the SQL reference.
 
+## Added 18 Nov 2026 (16 Nov version): budget performance, cohort builder, depth
+Definitions: **onboarding budget** = the onboarding form's "Total out-of-pocket capital available (all-in)" (column M, live since 20 Apr 2026: down payment + closing costs + renovation + furniture + amenities, not the purchase price), the selected range read at its upper end (Carson's rule), matched to confirmed starts by e-mail (form deal id as a fallback), answer given before the UC date. Up to $250K = upper end <= $250K; strict = Below $250K ($150K–$200K) / Range ends at $250K ($200K–$250K) / Above $250K. **HENRY (historical)** = Jira total_oop <= $225K (recorded mostly at purchase). Clients: won deals sharing an e-mail, Jira issue or that issue's client = one client (C####); Jira issues sharing a Pipedrive person id or primary e-mail = one Jira client (JC####). Every window share counts only eligible clients (the whole window has passed). Like-for-like = Mantel–Haenszel risk difference over start month x client experience x start-date rule.
+- Budget coverage: 394 of 825 confirmed starts matched; 431 not recorded (416 started before the form).
+- UC within 14 days: Up to $250K 13/194 (6.7%), Above $250K 12/191 (6.3%); like-for-like +0.3 pts (95% -4.7 to +5.4, 13 strata). Strict: Below $250K 7/117 (6.0%), Range ends at $250K 6/77 (7.8%).
+- Later windows like-for-like (up to minus above): 30 d -4.2, 45 d +1.9, 60 d +5.8, 90 d -0.1 pts, none clear of zero. Closed within 60 / 90 / 120 d: -0.4 / -1.3 / +9.8 pts.
+- Refunded within 30 d: Up to $250K 22/178 (12.4%) vs Above 11/176 (6.2%); like-for-like +5.9 pts (95% +0.1 to +11.8, 13 strata); within 60 d +5.9 pts (95% +0.4 to +11.3, 11 strata).
+- Recorded days to UC (mean / median): Up to $250K 41.33 / 35, Above 41.09 / 32; UC tomorrow scenario medians 39 / 39.
+- Cohort builder (`#cohorts`): entry event (deal created, won, client start, UC), date range, grouping, up to two outcomes with day windows; example: Jul–Sep 2026 starts, UC within 14 days 8/120 up to $250K vs 9/104 above; CLOSED within 90 days 22/60 vs 28/55 (eligible). Deals won within 30 days of creation: 520 of 7,279 eligible; 277 of those later bought a property.
+- Cash bridge at the Cash Forecast defaults: $1,360,698.01 service + $896,752.34 affiliate − $461,303.78 refunds = $1,796,146.57.
+- Cross-checks against the Executive Report for the same snapshot: 21/21; browser parity 885/885. All figures: `docs/2026-11-16/data/summary.json` (`expected.budget`, `growth`, `cash_bridge`, `definitions.terms`).
+
 ## 12 Nov 2026 version (archived). Everything below describes it, unchanged.
 
 # Context for AI assistants

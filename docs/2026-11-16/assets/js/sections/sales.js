@@ -4,7 +4,7 @@
   const SX = window.SX, U = SX.util, C = SX.charts, el = U.el;
 
   SX.sections.sales = function (root) {
-    SX.head(root, 'sales', 'Section 3 · Sales (Pipedrive)', 'The STR Search sales pipeline',
+    SX.head(root, 'sales', 'Section 5 · Sales (Pipedrive)', 'The STR Search sales pipeline',
       'One deal per booked strategy call. Deals come from pipedrive_reporting_base (STR Search pipeline; keep = true; Test Lead and Duplicate excluded), dated by creation and judged by today’s status (won, lost or open). The base has no stage history, so stage views are current-state snapshots.');
 
     SX.live(root, box => {

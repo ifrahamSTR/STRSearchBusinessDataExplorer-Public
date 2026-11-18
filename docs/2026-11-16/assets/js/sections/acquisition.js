@@ -4,7 +4,7 @@
   const SX = window.SX, U = SX.util, C = SX.charts, el = U.el;
 
   SX.sections.acquisition = function (root) {
-    SX.head(root, 'acquisition', 'Section 4 · Client acquisition (Jira)', 'Where Jira clients are in their property search',
+    SX.head(root, 'acquisition', 'Section 6 · Client acquisition (Jira)', 'Where Jira clients are in their property search',
       'Status is today’s value, so these views describe the current book of clients. Milestone dates (latest valid UC, inspection, closing) carry the history. Period filters use client_start_date. Closings dated after the data date count as scheduled, not closed.');
     SX.live(root, box => {
       const all = SX.model.jira();
@@ -99,7 +99,7 @@
       const sent = sig.filter(j => j.deals_sent != null), sentHunt = sig.filter(j => j.hunting);
       const rep = SX.data.eng.filter(e => e.repeat_client).length;
       box.append(el('div', { class: 'callout-grid' }, [
-        el('div', { class: 'callout callout--insight' }, [el('h4', { text: 'Contracts that fall through' }), el('p', { text: 'The reporting layer keeps only the latest valid Under Contract date (falling back to the first), with no contract count or fall-through history. Days to UC therefore run to the contract that stands today; fall-through rates cannot be measured in this version.' })]),
+        el('div', { class: 'callout callout--insight' }, [el('h4', { text: 'Contracts that fall through' }), el('p', {}, ['The reporting layer keeps only the latest valid Under Contract date, so days to UC run to the contract that stands today. Contract history comes from the 12 Nov Jira extract (fall-out address, UC count, first and latest dates): ', el('a', { href: '#fallthrough', text: 'what it can verify →' })])]),
         el('div', { class: 'callout callout--insight' }, [el('h4', { text: 'Repeat engagements' }), el('p', { text: U.fmtInt(rep) + ' won engagements are flagged repeat_client. Each purchase is its own engagement in won_clients_master, so engagement counts can exceed client counts.' })]),
         el('div', { class: 'callout callout--insight' }, [el('h4', { text: 'Properties sent to clients' }), el('p', { text: 'total_deals_sent is filled for ' + U.fmtInt(sent.length) + ' signed-up clients (median ' + U.fmtInt(U.median(sent.map(j => j.deals_sent))) + ') but for only ' + U.fmtInt(sentHunt.filter(j => j.deals_sent != null).length) + ' of ' + U.fmtInt(sentHunt.length) + ' hunting clients: it is mostly recorded at purchase, has no dates, and grows with search length.' })]),
       ]));
@@ -108,7 +108,7 @@
 
   /* ------------------------------------------------------------ Connected lifecycle */
   SX.sections.lifecycle = function (root) {
-    SX.head(root, 'lifecycle', 'Section 5 · Connected lifecycle', 'Following deals from Pipedrive into Jira outcomes',
+    SX.head(root, 'lifecycle', 'Section 7 · Connected lifecycle', 'Following deals from Pipedrive into Jira outcomes',
       'Deals are joined to Jira through the Jira issue’s PD_Deal_ID, which never repeats. The flow starts from STR Search deals created in the period and follows them to today.');
     C.card(root, {
       id: 'life-sankey', title: 'Deal → sale → Jira client → Under Contract → CLOSED', subtitle: 'In-scope deals created in the period · current outcome of each', height: 420,
