@@ -238,19 +238,24 @@ def build(f) -> dict:
 
 def cash_bridge(report: dict, f) -> dict:
     """Booked fees -> contract balances -> expected collections -> forecast net cash, at the Cash Forecast's default assumptions
-    (the same totals the Cash Forecast page shows before any control is moved)."""
+    (the same totals the Cash Forecast page shows before any control is moved). Paused + Additional Service: one % expected to close,
+    the rest refunded in full; affiliate revenue includes fees still due on purchases completed since 1 Oct 2026."""
     c = report["cash"]
-    G, NP, PA, F, DEF = c["groups"], c["noprop"], c["paused"], c["fixed"], c["defaults"]
-    pr, pf = DEF["paused_defaults"]["resume"] / 100, DEF["paused_defaults"]["refund"] / 100
+    if "completed" not in c or "paused_close" not in c["defaults"]:
+        return None                    # a report file from before Batch 5 (rebuild the report, then this)
+    G, NP, PA, F, DEF, CP = c["groups"], c["noprop"], c["paused"], c["fixed"], c["defaults"], c["completed"]
+    pc = DEF["paused_close"] / 100
     aff = DEF["affiliates"]
     fixed = float(sum(F["svc"]))
-    service = fixed + NP["collect"] + pr * PA["second"]
+    service = fixed + NP["collect"] + pc * PA["second"]
     kn = {k: float(sum(F["known"][k])) for k in aff}
     un = {k: float(sum(F["unknown"][k])) for k in aff}
-    affiliate = sum(aff[k]["rev"] * (kn[k] + aff[k]["conv"] * un[k]) for k in aff) \
+    forecast = sum(aff[k]["rev"] * (kn[k] + aff[k]["conv"] * un[k]) for k in aff) \
         + sum(aff[k]["rev"] * (NP["aff"][k]["known"] + aff[k]["conv"] * NP["aff"][k]["unknown"]) for k in aff) \
-        + sum(aff[k]["rev"] * pr * (PA["aff"][k]["known"] + aff[k]["conv"] * PA["aff"][k]["unknown"]) for k in aff)
-    refunds = -(float(sum(F["refund_base"])) + NP["refund_base"] + pf * PA["paid"])
+        + sum(aff[k]["rev"] * pc * (PA["aff"][k]["known"] + aff[k]["conv"] * PA["aff"][k]["unknown"]) for k in aff)
+    completed = sum(aff[k]["rev"] * (m["aff"][k]["known"] + aff[k]["conv"] * m["aff"][k]["unknown"]) for m in CP["months"] for k in aff)
+    affiliate = forecast + completed
+    refunds = -(float(sum(F["refund_base"])) + NP["refund_base"] + (1 - pc) * PA["paid"])
     eng = f.eng
     return {
         "booked_value_won_engagements": float(eng.value.sum()), "engagements": int(len(eng)),
@@ -258,9 +263,11 @@ def cash_bridge(report: dict, f) -> dict:
         "assumed_collected": float(c["view"]["assumed_collected"]), "gross_outstanding": float(c["view"]["gross_outstanding"]),
         "groups": [{"key": k, "label": CASH_GROUPS.get(k, k), "n": g["n"], "outstanding": g["outstanding"], "second": g.get("second"), "paid": g.get("paid"),
                     "p_close": g.get("p_close")} for k, g in G.items()],
-        "defaults": {"paused": DEF["paused_defaults"], "affiliates": aff, "expected_days": DEF["expected_days"]},
-        "expected": {"service": round(service, 2), "service_parts": {"contracts": round(fixed, 2), "searching": NP["collect"], "paused": round(pr * PA["second"], 2)},
-                     "affiliate": round(affiliate, 2), "refunds": round(refunds, 2), "net": round(service + affiliate + refunds, 2)},
+        "defaults": {"paused_close": DEF["paused_close"], "affiliates": aff, "expected_days": DEF["expected_days"]},
+        "expected": {"service": round(service, 2), "service_parts": {"contracts": round(fixed, 2), "searching": NP["collect"], "paused": round(pc * PA["second"], 2)},
+                     "affiliate": round(affiliate, 2), "affiliate_parts": {"completed": round(completed, 2), "forecast": round(forecast, 2)},
+                     "refunds": round(refunds, 2), "net": round(service + affiliate + refunds, 2)},
         "searching": {"n": NP["n"], "p_close": NP["p_close"], "p_refund": NP["p_refund"], "p_pause": NP["p_pause"]},
+        "completed": {"n": CP["n"], "from": CP["from"]},
         "unresolved": {"second_deal_review": c["resolution"]["second_deal_review"], "repeat": c["resolution"]["repeat"], "none": c["resolution"]["none"]},
     }

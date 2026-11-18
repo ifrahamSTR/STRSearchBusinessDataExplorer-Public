@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 # Cash Forecast totals at its default assumptions (Batch 4D, independently verified to the cent; LLM_CONTEXT of the report)
-CASH_DEFAULTS = {"service": 1360698.01, "affiliate": 896752.34, "refunds": -461303.78, "net": 1796146.57}
+CASH_DEFAULTS = {"service": 1796811.01, "affiliate": 1610575.04, "refunds": -490514.78, "net": 2916871.27}
 
 
 def run(f, enr, bud) -> list[dict]:

@@ -268,11 +268,11 @@
       el('ol', { class: 'bridge' }, [
         el('li', {}, [el('b', { text: money(B.booked_value_won_engagements) }), ' booked value on ' + U.fmtInt(B.engagements) + ' won deals (deal value).']),
         el('li', {}, [el('b', { text: money(B.contractual) }), ' contract balances: ' + money(B.assumed_collected) + ' assumed collected (at the win, or at closing under Split Pay), ' + money(B.gross_outstanding) + ' still outstanding.']),
-        el('li', {}, [el('b', { text: money(E.service) }), ' expected service collections: ' + money(E.service_parts.contracts) + ' contracts in progress + ' + money(E.service_parts.searching) + ' clients still searching + ' + money(E.service_parts.paused) + ' paused clients who resume.']),
-        el('li', {}, ['+ ', el('b', { text: money(E.affiliate) }), ' affiliate revenue (realtor, lender, STR Cribs) − ', el('b', { text: money(Math.abs(E.refunds)) }), ' future refunds.']),
+        el('li', {}, [el('b', { text: money(E.service) }), ' expected service collections: ' + money(E.service_parts.contracts) + ' contracts in progress + ' + money(E.service_parts.searching) + ' clients still searching + ' + money(E.service_parts.paused) + ' paused clients who close.']),
+        el('li', {}, ['+ ', el('b', { text: money(E.affiliate) }), ' affiliate revenue (realtor, lender, STR Cribs; ' + money(E.affiliate_parts.completed) + ' of it on purchases completed since ' + U.fmtDate(B.completed.from) + ' and not yet paid) − ', el('b', { text: money(Math.abs(E.refunds)) }), ' future refunds.']),
         el('li', {}, [el('b', { text: money(E.net) }), ' estimated future net cash.']),
       ]),
-      el('p', { class: 'small muted', text: 'Default assumptions: paused clients ' + B.defaults.paused.resume + '% resume / ' + B.defaults.paused.refund + '% refund / ' + B.defaults.paused.remain + '% stay paused; affiliate fees and conversions as on the Cash Forecast. Unverified records and second deals under review are not forecast. Matches the Cash Forecast to the cent (cross-checked on every build).' }),
+      el('p', { class: 'small muted', text: 'Default assumptions: ' + B.defaults.paused_close + '% of paused and Additional Service deals close, the rest receive a full refund; affiliate fees and conversions as on the Cash Forecast. Unverified records and second deals under review are not forecast. Matches the Cash Forecast to the cent (cross-checked on every build).' }),
       el('a', { href: link.replace(/\/$/, '') + '/2026-11-16/cash.html', target: '_blank', rel: 'noopener', text: 'Change the assumptions in the Cash Forecast →' })]));
   };
 
