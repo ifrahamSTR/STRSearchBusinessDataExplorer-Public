@@ -51,7 +51,7 @@
       ['Stage-to-stage conversion', 'critical', 'Not supported', 'Only the current stage is extracted. A stage-history extract is needed.'],
       ['Package / payment mix', 'warning', 'Partial', 'Filled mostly for recent wins. Payment labels unconfirmed.'],
       ['Time to UC / CLOSED', 'good', 'Supported, with caveats', 'From Jira changelog first dates. Early history is incomplete and dates are UTC.'],
-      ['Conversion to UC / CLOSED', 'warning', 'Supported as cohorts', 'Snapshot shares (Carson Q2) need the cohort view beside them.'],
+      ['Conversion to UC / CLOSED', 'warning', 'Supported as cohorts', 'Snapshot shares (question 2) need the cohort view beside them.'],
       ['Refund rate', 'warning', 'Partial', 'Refunded status count only. No refund dates or amounts.'],
       ['Revenue, cash collected, receivables', 'critical', 'Not supported', 'No payment or invoice data. Deal_Value is booked value only.'],
       ['CAC / channel ROI', 'critical', 'Not yet', 'Ads spend, Rabbu cost and GHL are in separate workbooks, not joined here.'],
@@ -75,7 +75,7 @@
     root.append(box);
     const COLS = {
       jira: [
-        { key: 'key', label: 'Jira key' }, { key: 'status', label: 'Status' }, { key: 'carson_class', label: 'Carson class' },
+        { key: 'key', label: 'Jira key' }, { key: 'status', label: 'Status' }, { key: 'status_class', label: 'Status class' },
         { key: 'start', label: 'Effective start', sort: r => r.start_d }, { key: 'start_src', label: 'Start from' }, { key: 'uc', label: 'First UC', sort: r => r.uc_d },
         { key: 'days_uc', label: 'Days to UC', num: true }, { key: 'closed', label: 'First CLOSED', sort: r => r.closed_d }, { key: 'days_closed', label: 'Days to CLOSED', num: true },
         { key: 'assignee', label: 'Assignee' }, { key: 'deal_id', label: 'Deal ID' }, { key: 'pd_status', label: 'Deal status' }, { key: 'pd_product', label: 'Package' }, { key: 'pd_source', label: 'Source' }],

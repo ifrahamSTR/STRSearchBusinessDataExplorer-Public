@@ -200,15 +200,15 @@ def build_jira(raw: pd.DataFrame, deals_all: pd.DataFrame) -> pd.DataFrame:
     out["key"] = clean_str(j["key"]).str.upper()
     out["created"] = ny_date(j["issue_created_date"])
     out["due"] = naive_date(j["issue_due_date"])
-    out["start"] = out["due"].fillna(out["created"])          # Carson: COALESCE(due, created)
+    out["start"] = out["due"].fillna(out["created"])          # Effective start: COALESCE(due, created)
     out["start_src"] = np.where(out["due"].notna(), "due", "created")
     status = clean_str(j["Issue_Status"])
     out["status"] = status
     out["group"] = status.map(lambda s: D.STATUS_META.get(s, {}).get("group", "Other"))
-    out["carson_signed"] = status.isin(D.SIGNED_UP_STATUSES)
-    out["carson_active"] = status.isin(D.ACTIVE_STATUSES)
-    out["carson_inactive"] = status.isin(D.INACTIVE_STATUSES)
-    out["carson_class"] = np.where(out["carson_active"], "Active", np.where(out["carson_inactive"], "Inactive", "Not in Carson's lists"))
+    out["signed_list"] = status.isin(D.SIGNED_UP_STATUSES)
+    out["active_list"] = status.isin(D.ACTIVE_STATUSES)
+    out["inactive_list"] = status.isin(D.INACTIVE_STATUSES)
+    out["status_class"] = np.where(out["active_list"], "Active", np.where(out["inactive_list"], "Inactive", "Not in the status lists"))
     out["uc"] = naive_date(j["first_under_contract_date"])
     out["pi"] = naive_date(j["first_passed_inspection_date"])
     out["closed"] = naive_date(j["first_closed_date"])
@@ -356,8 +356,8 @@ def main() -> None:
     deal_cols = ["id", "created", "won_date", "lost_date", "status", "stage", "stage_order", "lost_reason", "value",
                  "product", "payment", "source", "rep", "experience", "no_show", "qualified_official", "jira_key",
                  "has_jira", "in_scope", "excl_reason", "days_to_win", "repeat_person"]
-    jira_cols = ["key", "created", "due", "start", "start_src", "status", "group", "carson_signed", "carson_active",
-                 "carson_inactive", "carson_class", "uc", "pi", "closed", "latest_uc", "uc_count", "closed_count",
+    jira_cols = ["key", "created", "due", "start", "start_src", "status", "group", "signed_list", "active_list",
+                 "inactive_list", "status_class", "uc", "pi", "closed", "latest_uc", "uc_count", "closed_count",
                  "pi_count", "fell_out", "won_jira", "latest_status_date", "has_history", "assignee", "deals_sent",
                  "state", "jira_experience", "days_uc", "days_pi", "days_closed", "deal_id", "deal_found", "pd_status",
                  "pd_pipeline", "pd_won_date", "pd_created", "pd_product", "pd_payment", "pd_source", "pd_rep",
@@ -380,7 +380,7 @@ def main() -> None:
             "counts": {"deals_pipeline3": int(len(deals)), "deals_in_scope": int(deals["in_scope"].sum()), "jira": int(len(jira))},
         },
         "defs": {
-            "carson": {"signed_up": D.SIGNED_UP_STATUSES, "inactive": D.INACTIVE_STATUSES, "active": D.ACTIVE_STATUSES,
+            "status_lists": {"signed_up": D.SIGNED_UP_STATUSES, "inactive": D.INACTIVE_STATUSES, "active": D.ACTIVE_STATUSES,
                        "effective_start": D.EFFECTIVE_START_RULE},
             "status_meta": D.STATUS_META,
             "status_groups": [{"name": n, "desc": d} for n, d in D.STATUS_GROUPS],

@@ -4,7 +4,7 @@ Reuses the Executive Report's pipeline (../STRSearch-Executive-Dashboard/pipelin
 foundation, so both sites share one set of matches and definitions:
   - onboarding budget: the onboarding form's "Total out-of-pocket capital available (all-in)" range (column M), matched to
     confirmed starts as in the report's chapter 5 (e-mail first, the form's deal id as a fallback; the answer given before
-    the Under Contract date). Carson's rule: read the range at its upper end. Exported as the selected range only.
+    the Under Contract date). The stated rule: read the range at its upper end. Exported as the selected range only.
   - prior offer experience (form column AA): the one onboarding answer associated with speed in chapter 5.
   - client identity: won deals and Jira issues that share an e-mail (12 Nov extracts), a Pipedrive person id or a Jira link
     belong to one client (repeat.deal_people + records.people). Exported as a pseudonym (C0001), never as an e-mail.
@@ -226,7 +226,7 @@ def build(f) -> dict:
     rep_path = REPORT / "docs" / "2026-11-16" / "data" / "story-data.json"
     report = json.loads(rep_path.read_text()) if rep_path.exists() else None
     bridge = cash_bridge(report, f) if report else None
-    meta = {"form": {"field": BUDGET_FIELD, "column": "M", "since": "2026-04-20", "measures": BUDGET_MEASURES, "rule": "upper end of the selected range (Carson's interim rule, also being carried into Jira's budget field)",
+    meta = {"form": {"field": BUDGET_FIELD, "column": "M", "since": "2026-04-20", "measures": BUDGET_MEASURES, "rule": "upper end of the selected range (the interim rule, also being carried into Jira's budget field)",
                      "threshold_k": BUDGET_THRESHOLD, "matched": int(ans.matched.sum()), "confirmed_starts": int(len(co)),
                      "since_form": int((co.start >= pd.Timestamp("2026-04-20")).sum()),
                      "since_form_matched": int(((co.start >= pd.Timestamp("2026-04-20")) & ans.matched.reindex(co.index).fillna(False)).sum()),

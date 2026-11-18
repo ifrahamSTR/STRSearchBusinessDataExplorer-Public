@@ -9,7 +9,7 @@
   "pipeline": "versions/2026-11-12/pipeline/build.py",
   "rebuild": "python versions/2026-11-12/pipeline/build.py --cache   # writes versions/2026-11-12/rebuild/; compare with docs/2026-11-12/data (only meta.built_at differs)",
   "outputs": {
-    "docs/2026-11-12/data/explorer-data.js": "f04e9d7dc1841e23a2008f651dca18d0c18bd927428bf0895c129c08b31ec817"
+    "docs/2026-11-12/data/explorer-data.js": "09ff55e8dff6ce964fdf2fc365c58c557a81b681698f4d9d1a96be512573f51f"
   },
-  "note": "Frozen on 2026-11-16 when the 16 Nov 2026 reporting layer became the default. Never overwrite these outputs."
+  "note": "Frozen on 2026-11-16 when the 16 Nov 2026 reporting layer became the default. Never overwrite these outputs. Re-frozen on 2026-11-18: staff and reviewer names were removed from wording and field names (carson_* fields renamed); figures unchanged, and the frozen pipeline rebuilds this file exactly."
 }

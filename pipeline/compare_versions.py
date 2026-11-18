@@ -70,7 +70,7 @@ def main() -> None:
     gone = both[both._merge == "left_only"]
     new = both[both._merge == "right_only"]
 
-    sx, sn = b.carson_signed.astype(bool), b.signed.astype(bool)
+    sx, sn = b.signed_list.astype(bool), b.signed.astype(bool)
     ss = b[sn & b.start.notna() & b.start_old.notna()]
     shift = (ss.start - ss.start_old).dt.days
     post = ss.created >= pd.Timestamp(D.START_RULE_DATE)
@@ -84,7 +84,7 @@ def main() -> None:
                      "new": {"id": D.VERSION_ID, "data_asof": f.asof.strftime("%Y-%m-%d")}},
         "records": {
             "jira_old": int(len(oj)), "jira_new": int(len(nj)), "jira_both": int(len(b)),
-            "dropped": {"n": int(len(gone)), "signed": int(gone.carson_signed.astype(bool).sum()),
+            "dropped": {"n": int(len(gone)), "signed": int(gone.signed_list.astype(bool).sum()),
                         "by_status": {k: int(v) for k, v in gone.status_old.value_counts().items()} if "status_old" in gone else {},
                         "created_2024": int((gone.created_old.dt.year == 2024).sum())},
             "added": {"n": int(len(new)), "created_before_old_asof": int((new.created < oasof).sum()),

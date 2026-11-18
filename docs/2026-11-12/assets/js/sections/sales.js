@@ -171,6 +171,6 @@
     sr.append(el('div', { class: 'callout callout--critical mt-0' }, [el('h4', { text: 'Why this matters for every sales metric' }),
       el('p', { text: 'Pipeline membership is current-state. When a booked call no-shows, the deal is moved to the SDR Setter pipeline, which the STR Search filter excludes.' }),
       el('ul', {}, [el('li', { text: 'Deal counts and no-show rates from June 2026 are lower than the bookings that really happened.' }), el('li', { text: 'Win rate per deal rises for the same reason.' }), el('li', { text: 'Historical months can be restated as deals move.' })]),
-      el('p', { text: 'Decision for Carson: should moved bookings count as STR Search deals for funnel metrics?' })]));
+      el('p', { text: 'Decision needed: should moved bookings count as STR Search deals for funnel metrics?' })]));
   };
 })();

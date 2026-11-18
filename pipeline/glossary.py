@@ -54,7 +54,7 @@ TERMS = [
     # ---------------------------------------------------------------- budget and segments
     {"key": "budget", "term": "Onboarding budget (form)", "unit": "Confirmed starts with a matched form answer", "date": "Answer given before the client's UC date",
      "source": "Onboarding form 'Total out-of-pocket capital available (all-in)' (column M, live since 20 Apr 2026), matched by e-mail (form deal id as a fallback)",
-     "calc": "The selected range read at its upper end (Carson's interim rule, also being carried into Jira's budget field). Up to $250K = upper end ≤ $250K; Above $250K = upper end > $250K. It measures all-in capital (down payment + closing costs + renovation + furniture + amenities), not the purchase price."},
+     "calc": "The selected range read at its upper end (the interim rule, also being carried into Jira's budget field). Up to $250K = upper end ≤ $250K; Above $250K = upper end > $250K. It measures all-in capital (down payment + closing costs + renovation + furniture + amenities), not the purchase price."},
     {"key": "budget_strict", "term": "Strict $250K comparison", "unit": "Confirmed starts with a matched form answer", "date": "As above", "source": "As above",
      "calc": "Below $250K = a range ending below $250K ($150K–$200K); Range ends at $250K = $200K–$250K (a range, not an exact amount, so it is shown on its own); Above $250K = ranges from $250K–$300K up."},
     {"key": "henry", "term": "HENRY (Nov 16 Explorer, historical)", "unit": "Jira issues / won deals", "date": "Snapshot",

@@ -71,7 +71,7 @@
     root.append(
       el('div', { class: 'section-kicker', text: 'STRSearch internal BI · Pipedrive + Jira' }),
       el('h1', { id: 'overview-title', text: 'From booked call to closed property: how STRSearch’s pipeline really moves' }),
-      el('p', { class: 'section-lede', text: 'A prospect books a call (Calendly), becomes a Pipedrive deal and, if they buy, a Jira client the acquisitions team guides to an Under Contract and then a CLOSED property. This explorer follows records through both systems, answers Carson’s three Jira questions, and shows where the data can and cannot be trusted.' }),
+      el('p', { class: 'section-lede', text: 'A prospect books a call (Calendly), becomes a Pipedrive deal and, if they buy, a Jira client the acquisitions team guides to an Under Contract and then a CLOSED property. This explorer follows records through both systems, answers the three Jira questions, and shows where the data can and cannot be trusted.' }),
     );
     const strip = el('div', { class: 'snapshot-strip' });
     m.sources.filter(s => s.snapshot).forEach(s => strip.append(el('span', { class: 'chip' }, [el('span', { class: 'dot' }), (s.key === 'jira' ? 'Jira' : 'Pipedrive') + ' extract ' + s.snapshot])));
@@ -89,7 +89,7 @@
       SX.ui.kpi(row, { sys: 'PD', label: 'Deals (STR Search)', value: U.fmtInt(deals.length), sub: 'Official PD_Deals filter · created ' + per });
       SX.ui.kpi(row, { sys: 'PD', label: 'Won deals', value: U.fmtInt(won.length), sub: U.fmtPct(U.ratio(won.length, deals.length), 1) + ' of those deals, so far' });
       SX.ui.kpi(row, { sys: 'PD', label: 'Booked value (won)', value: U.fmtMoney(U.sum(won, d => d.value), true), sub: 'Sales-entered Deal_Value. Not cash or revenue' });
-      SX.ui.kpi(row, { sys: 'Jira', label: 'Signed-up clients', value: U.fmtInt(signed.length), sub: 'Carson’s signed-up statuses · effective start ' + per });
+      SX.ui.kpi(row, { sys: 'Jira', label: 'Signed-up clients', value: U.fmtInt(signed.length), sub: 'Signed-up statuses · effective start ' + per });
       SX.ui.kpi(row, { sys: 'Jira', label: 'Under Contract events', value: U.fmtInt(ucE.length), sub: 'First UC dates ' + per });
       SX.ui.kpi(row, { sys: 'Jira', label: 'CLOSED events', value: U.fmtInt(clE.length), sub: 'First CLOSED dates ' + per });
       SX.ui.kpi(row, { sys: 'Jira', label: 'Median days to UC / CLOSED', value: U.fmtInt(dUC.median) + ' / ' + U.fmtInt(dCL.median), unit: 'days', sub: 'From COALESCE(due, created), completed milestones only' });
@@ -104,7 +104,7 @@
       step('is-top', 'GHL · Ads · Rabbu', 'Lead & call booked', U.fmtInt(deals.length), 'Calendly booking creates a Pipedrive deal');
       step('is-sales', 'Pipedrive', 'Won (sale)', U.fmtInt(won.length), 'Won date set: service sold');
       step('is-sales', 'Pipedrive → Jira', 'Won with Jira issue', U.fmtInt(withJira), U.fmtPct(U.ratio(withJira, won.length)) + ' of won deals are linked');
-      step('is-acq', 'Jira', 'Signed-up clients', U.fmtInt(signed.length), 'Started in period (Carson list)');
+      step('is-acq', 'Jira', 'Signed-up clients', U.fmtInt(signed.length), 'Started in period (status list)');
       step('is-acq', 'Jira', 'Reached Under Contract', U.fmtInt(reachedUC), U.fmtPct(U.ratio(reachedUC, signed.length)) + ' of those clients so far');
       step('is-acq', 'Jira', 'Reached CLOSED', U.fmtInt(reachedCL), U.fmtPct(U.ratio(reachedCL, signed.length)) + ' of those clients so far');
       step('is-acq', 'Jira', 'Post-close', U.fmtInt(signed.filter(j => j.group === 'Post-close').length), 'Photography, listing or archived');
@@ -115,9 +115,9 @@
     const e = SX.data.expected, q = e.q2, sm = SX.data.extras.sdr_moves;
     const tk = el('div', { class: 'takeaways' });
     const card = (k, h, p, href) => tk.append(el('div', { class: 'takeaway' }, [el('div', { class: 'tk-kicker', text: k }), el('h3', { text: h }), el('p', { text: p }), href ? el('a', { href, text: 'See the evidence →' }) : null]));
-    card('Process change', 'Jira is no longer only signed clients', 'Since the New Client Experience (May 27, 2026), Jira issues open at onboarding, before the sale. ' + U.fmtInt(e.jira.unmapped) + ' of ' + U.fmtInt(e.jira.total) + ' issues are pre-sale prospects in statuses outside Carson’s lists.', '#how');
-    card('Carson Q1', 'Median ' + U.fmtInt(e.q1.uc.median) + ' days to UC, ' + U.fmtInt(e.q1.closed.median) + ' to CLOSED', 'For clients who got there (means ' + U.fmt1(e.q1.uc.mean) + ' / ' + U.fmt1(e.q1.closed.mean) + '). Counting clients still searching, half of signed-up clients reach UC by day ' + U.fmtInt(e.q1.km_uc_signed) + ' and CLOSED by day ' + U.fmtInt(e.q1.km_closed_signed) + '.', '#questions');
-    card('Carson Q2', U.fmtPct(q.active_uc / q.active) + ' of Active clients have gone UC', U.fmtPct(q.active_closed / q.active) + ' have CLOSED. This is a current-status snapshot: the Active list includes CLOSED and post-close clients and excludes refunded ones. The cohort view tells the forward-looking story.', '#q2');
+    card('Process change', 'Jira is no longer only signed clients', 'Since the New Client Experience (May 27, 2026), Jira issues open at onboarding, before the sale. ' + U.fmtInt(e.jira.unmapped) + ' of ' + U.fmtInt(e.jira.total) + ' issues are pre-sale prospects in statuses outside the status lists.', '#how');
+    card('Question 1', 'Median ' + U.fmtInt(e.q1.uc.median) + ' days to UC, ' + U.fmtInt(e.q1.closed.median) + ' to CLOSED', 'For clients who got there (means ' + U.fmt1(e.q1.uc.mean) + ' / ' + U.fmt1(e.q1.closed.mean) + '). Counting clients still searching, half of signed-up clients reach UC by day ' + U.fmtInt(e.q1.km_uc_signed) + ' and CLOSED by day ' + U.fmtInt(e.q1.km_closed_signed) + '.', '#questions');
+    card('Question 2', U.fmtPct(q.active_uc / q.active) + ' of Active clients have gone UC', U.fmtPct(q.active_closed / q.active) + ' have CLOSED. This is a current-status snapshot: the Active list includes CLOSED and post-close clients and excludes refunded ones. The cohort view tells the forward-looking story.', '#q2');
     card('Data caution', 'No-show calls now leave the STR Search pipeline', 'Since June 2026, booked calls that no-show are moved into the SDR Setter pipeline (' + U.fmtInt(U.sum(sm.filter(s => s.month >= '2026-06'), s => s.p6_calendly_booked)) + ' deals). STR Search deal counts and no-show rates drop and win rates rise for that reason, not only because of performance.', '#health');
     card('Money', 'Booked value is not revenue', 'Pipedrive Deal_Value (median ' + U.fmtMoney(U.median(SX.data.deals.filter(d => d.in_scope && d.status === 'won').map(d => d.value))) + ') is what sales entered. There is no payment, refund-amount or cash data in these extracts, so revenue and cash work needs another source.', '#definitions');
     root.append(tk);
@@ -138,12 +138,12 @@
     card('GoHighLevel · Ads · Rabbu', 'Top of funnel', 'Website, lead capture and marketing attribution. Rabbu sells purchased leads. Not loaded here except as Pipedrive lead source.', [['In this explorer', 'via PD_Source']]);
     card('Calendly', 'Booking bridge', 'A booked strategy call creates the Pipedrive deal and carries UTM/referral attribution.', [['Evidence', 'Calendly_ID on deals']]);
     card('Pipedrive · STR Search pipeline', 'Sales CRM', 'One deal per booked call, moved through 16 stages to Contract Signed (won) or lost.', [['Deals (official)', U.fmtInt(ex.deals.in_scope)], ['Won', U.fmtInt(ex.deals.won)], ['SDR Setter pipeline', U.fmtInt(D.extras.p6_total) + ' (excluded)']]);
-    card('Jira · Search Clients (CLIEN)', 'Acquisition CRM', 'The acquisitions team runs the client’s property search: check-in statuses, Under Contract, Passed Inspection, CLOSED, then post-close services.', [['Issues', U.fmtInt(ex.jira.total)], ['Signed-up (Carson)', U.fmtInt(ex.jira.signed)], ['Linked to a deal', U.fmtPct(linkPct)]]);
+    card('Jira · Search Clients (CLIEN)', 'Acquisition CRM', 'The acquisitions team runs the client’s property search: check-in statuses, Under Contract, Passed Inspection, CLOSED, then post-close services.', [['Issues', U.fmtInt(ex.jira.total)], ['Signed-up (status list)', U.fmtInt(ex.jira.signed)], ['Linked to a deal', U.fmtPct(linkPct)]]);
     root.append(sys);
 
     // Two clocks
     const won = D.deals.filter(d => d.in_scope && d.status === 'won');
-    const sig = D.jira.filter(j => j.carson_signed);
+    const sig = D.jira.filter(j => j.signed_list);
     const l2c = U.median(sig.filter(j => j.closed_d != null && j.pd_created_d != null).map(j => j.closed_d - j.pd_created_d));
     const clocks = el('div', { class: 'clocks' });
     const clock = (title, nodes, segs, note) => {
@@ -196,7 +196,7 @@
         el('li', { text: 'issue_due_date = onboarding-call date (90% exact), often before the won date.' }),
         el('li', { text: 'Median issue creation moved from the won day to 5 days before it.' }),
       ]),
-      el('p', { text: 'Consequence: “new Jira issues” no longer equals “new clients”. Use Carson’s signed-up list.' }),
+      el('p', { text: 'Consequence: “new Jira issues” no longer equals “new clients”. Use the signed-up list.' }),
     ]);
     right.append(ex2);
 
@@ -210,20 +210,20 @@
   /* ------------------------------------------------------------ Definitions */
   SX.sections.definitions = function (root) {
     head(root, 'definitions', 'Section 8 · Definitions & method', 'Definitions, status map and open questions',
-      'Every number above traces back to the rules on this page. Carson’s instructions take precedence, then verified data and scripts, then older documentation.');
+      'Every number above traces back to the rules on this page. The stated instructions take precedence, then verified data and scripts, then older documentation.');
     const D = SX.data, defs = D.defs;
     const counts = U.countBy(D.jira, j => j.status);
-    root.append(el('div', { class: 'subhead' }, [el('h3', { text: 'Jira status map' }), el('span', { class: 'hint', text: 'Carson’s classification is applied verbatim to the current Issue_Status' })]));
+    root.append(el('div', { class: 'subhead' }, [el('h3', { text: 'Jira status map' }), el('span', { class: 'hint', text: 'The status classification is applied verbatim to the current Issue_Status' })]));
     const rows = Object.entries(defs.status_meta).filter(([s]) => s !== 'under Contract').map(([s, mm]) => ({
       status: s, group: mm.group, order: mm.order, n: counts.get(s) || 0,
-      carson: defs.carson.inactive.includes(s) ? 'Inactive' : defs.carson.active.includes(s) ? 'Active' : 'Not in lists', meaning: mm.meaning,
+      status_list: defs.status_lists.inactive.includes(s) ? 'Inactive' : defs.status_lists.active.includes(s) ? 'Active' : 'Not in lists', meaning: mm.meaning,
     }));
     root.append(SX.ui.table({ columns: [
-      { key: 'status', label: 'Status' }, { key: 'group', label: 'Lifecycle group' }, { key: 'carson', label: 'Carson class' },
+      { key: 'status', label: 'Status' }, { key: 'group', label: 'Lifecycle group' }, { key: 'status_list', label: 'Status class' },
       { key: 'n', label: 'Issues', num: true, fmt: U.fmtInt }, { key: 'meaning', label: 'What the data shows' }], rows, sortKey: 'order', sortDir: 1 }));
-    root.append(el('details', { class: 'disclosure' }, [el('summary', { text: 'Carson’s status code (verbatim)' }), el('div', { class: 'pre', text:
-      'signed_up_statuses = ' + JSON.stringify(defs.carson.signed_up) + '\ninactive_statuses = ' + JSON.stringify(defs.carson.inactive) +
-      '\nactive_statuses = [s for s in signed_up_statuses if s not in inactive_statuses]\neffective_start = ' + defs.carson.effective_start +
+    root.append(el('details', { class: 'disclosure' }, [el('summary', { text: 'Status code (verbatim)' }), el('div', { class: 'pre', text:
+      'signed_up_statuses = ' + JSON.stringify(defs.status_lists.signed_up) + '\ninactive_statuses = ' + JSON.stringify(defs.status_lists.inactive) +
+      '\nactive_statuses = [s for s in signed_up_statuses if s not in inactive_statuses]\neffective_start = ' + defs.status_lists.effective_start +
       '\n\nNote: lowercase “underContract” never appears as a current status; it survives only in changelog fields (65 issues).'.replace('underContract', 'under Contract') })]));
 
     root.append(el('div', { class: 'subhead' }, [el('h3', { text: 'Metric definitions used here' })]));
@@ -233,7 +233,7 @@
       ['Win rate', 'Won ÷ deals created in the period. Recent cohorts are immature: open deals can still win, and the median time to win is 21 days.'],
       ['Not disqualified', 'Pipedrive “qualified” column = not lost as Not Qualified / AirVal / Partner Opportunity. This is not the stage rule in the FCT Definitions sheet.'],
       ['Booked value', 'Sum of Deal_Value on won deals. Sales-entered, so not revenue or cash.'],
-      ['Signed-up / Active / Inactive', 'Carson’s lists applied to today’s Issue_Status (a snapshot, not history).'],
+      ['Signed-up / Active / Inactive', 'The status lists applied to today’s Issue_Status (a snapshot, not history).'],
       ['Effective start', 'COALESCE(issue_due_date, issue_created_date). The due date is the onboarding-call date.'],
       ['Days to UC / CLOSED', 'first_under_contract_date (or first_closed_date) − effective start, in days. Negative values would be excluded (none exist). The ETL’s own days_to_* fields use the due date only.'],
       ['Kaplan-Meier curve', 'Share of signed-up clients reaching the milestone by day N, counting clients still searching up to the as-of date (' + D.meta.asof + ').'],
@@ -241,10 +241,10 @@
     ];
     root.append(SX.ui.table({ sortable: false, columns: [{ key: 'a', label: 'Term', width: '22%' }, { key: 'b', label: 'Definition' }], rows: md.map(([a, b]) => ({ a, b })) }));
 
-    root.append(el('div', { class: 'subhead' }, [el('h3', { text: 'Open questions for Carson' }), el('span', { class: 'hint', text: 'Decisions the data cannot make' })]));
+    root.append(el('div', { class: 'subhead' }, [el('h3', { text: 'Open questions' }), el('span', { class: 'hint', text: 'Decisions the data cannot make' })]));
     const qs = [
       'Should “Active” stay a current-status snapshot (CLOSED and post-close count as active), or become an entry-cohort definition for conversion KPIs?',
-      'For clients with no due date, should the start fall back to issue creation (Carson’s rule), the Jira Client_Won_Date or the Pipedrive won date? Since May 2026, issue creation comes before the sale.',
+      'For clients with no due date, should the start fall back to issue creation (the stated rule), the Jira Client_Won_Date or the Pipedrive won date? Since May 2026, issue creation comes before the sale.',
       'Q3 “new clients”: signed-up clients by effective start (default here), or every new Jira issue? The two diverge sharply from June 2026.',
       'Should milestones be counted per client (first UC) or per property? ' + U.fmtPct(U.ratio(D.jira.filter(j => (j.uc_count || 0) > 1).length, D.jira.filter(j => j.uc_d != null).length)) + ' of clients who went UC have more than one UC event, and some close more than once.',
       'Confirm the Payment Type labels for options 214 and 215 in Pipedrive field settings.',

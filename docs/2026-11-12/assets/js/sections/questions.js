@@ -1,12 +1,12 @@
-/* Carson's three Jira questions + metric parity check (browser vs Python build). */
+/* the three Jira questions + metric parity check (browser vs Python build). */
 (function () {
   'use strict';
   const SX = window.SX, U = SX.util, C = SX.charts, el = U.el;
   const calc = () => SX.calc;
 
   SX.sections.questions = function (root) {
-    SX.head(root, 'questions', 'Section 2 · Carson’s questions', 'Carson’s three Jira questions, answered with their caveats',
-      'Each answer leads with Carson’s exact definition, then shows what changes when the definition or population changes. Filters above apply: period = effective start date (events for Q3).');
+    SX.head(root, 'questions', 'Section 2 · The three questions', 'The three Jira questions, answered with their caveats',
+      'Each answer leads with the stated definition, then shows what changes when the definition or population changes. Filters above apply: period = effective start date (events for Q3).');
 
     /* ---------------- Q1 ---------------- */
     const v1 = { pop: 'all', basis: 'start' };
@@ -28,15 +28,15 @@
       const rows = q1rows();
       const uc = calc().stats(rows.map(j => calc().days(j, 'uc', v1.basis)));
       const cl = calc().stats(rows.map(j => calc().days(j, 'closed', v1.basis)));
-      const kmU = calc().km(rows.filter(j => j.carson_signed), 'uc', v1.basis), kmC = calc().km(rows.filter(j => j.carson_signed), 'closed', v1.basis);
+      const kmU = calc().km(rows.filter(j => j.signed_list), 'uc', v1.basis), kmC = calc().km(rows.filter(j => j.signed_list), 'closed', v1.basis);
       SX.ui.kpi(tiles1, { cls: 'kpi--accent', label: 'Median days to Under Contract', value: U.fmtInt(uc.median), unit: 'days', sub: 'Mean ' + U.fmt1(uc.mean) + ' · p25–p75 ' + U.fmtInt(uc.p25) + '–' + U.fmtInt(uc.p75) + ' · n = ' + U.fmtInt(uc.n) });
       SX.ui.kpi(tiles1, { cls: 'kpi--accent', label: 'Median days to CLOSED', value: U.fmtInt(cl.median), unit: 'days', sub: 'Mean ' + U.fmt1(cl.mean) + ' · p25–p75 ' + U.fmtInt(cl.p25) + '–' + U.fmtInt(cl.p75) + ' · n = ' + U.fmtInt(cl.n) });
       SX.ui.kpi(tiles1, { label: 'Half of signed-up clients reach UC by', value: kmU.median == null ? 'not yet' : 'day ' + U.fmtInt(kmU.median), sub: 'Kaplan-Meier, counting the ' + U.fmtInt(kmU.n - kmU.events) + ' clients still without UC' });
       SX.ui.kpi(tiles1, { label: 'Half of signed-up clients reach CLOSED by', value: kmC.median == null ? 'not yet' : 'day ' + U.fmtInt(kmC.median), sub: 'Kaplan-Meier, counting the ' + U.fmtInt(kmC.n - kmC.events) + ' clients still without CLOSED' });
     }
     ctl1.append(
-      SX.ui.seg('Population', [{ value: 'all', label: 'All issues with the milestone' }, { value: 'signed', label: 'Carson signed-up only' }], v1.pop, v => { v1.pop = v; refresh1(); }),
-      SX.ui.seg('Start date', [{ value: 'start', label: 'Carson: COALESCE(due, created)' }, { value: 'created', label: 'Issue created' }, { value: 'due', label: 'Due date only (ETL fields)' }], v1.basis, v => { v1.basis = v; refresh1(); }),
+      SX.ui.seg('Population', [{ value: 'all', label: 'All issues with the milestone' }, { value: 'signed', label: 'Signed-up statuses only' }], v1.pop, v => { v1.pop = v; refresh1(); }),
+      SX.ui.seg('Start date', [{ value: 'start', label: 'Effective start: COALESCE(due, created)' }, { value: 'created', label: 'Issue created' }, { value: 'due', label: 'Due date only (ETL fields)' }], v1.basis, v => { v1.basis = v; refresh1(); }),
     );
     const hist = C.card(g1, {
       id: 'q1-hist', title: 'Distribution of days to first UC and first CLOSED', subtitle: '15-day bins · completed milestones only', height: 300,
@@ -58,7 +58,7 @@
     const km = C.card(g1, {
       id: 'q1-km', title: 'Share of signed-up clients who have reached each milestone, by day', subtitle: 'Kaplan-Meier · clients still searching count until the as-of date', height: 300,
       render({ t }) {
-        const rows = q1rows().filter(j => j.carson_signed);
+        const rows = q1rows().filter(j => j.signed_list);
         if (!rows.length) return { empty: true };
         const a = calc().km(rows, 'uc', v1.basis), b = calc().km(rows, 'closed', v1.basis);
         const xs = []; for (let d = 0; d <= 540; d += 5) xs.push(d);
@@ -117,22 +117,22 @@
     root.append(q2);
     q2.append(el('div', { class: 'q-head' }, [el('div', { class: 'q-num', text: '2' }), el('div', {}, [
       el('h3', { text: 'What percentage of Active Jira clients reach Under Contract and CLOSED?' }),
-      el('p', { text: 'Carson’s definition: clients whose current status is on the Active list (signed-up minus Refunded, Paused, Additional Service). Numerator: clients with a first UC (or first CLOSED) date.' })])]));
+      el('p', { text: 'Definition: clients whose current status is on the Active list (signed-up minus Refunded, Paused, Additional Service). Numerator: clients with a first UC (or first CLOSED) date.' })])]));
     SX.live(q2, box => {
       const act = SX.model.jira({ population: 'active' }), sig = SX.model.jira({ population: 'signed' });
       const a = el('div', { class: 'answer' });
       const nU = act.filter(j => j.uc_d != null).length, nC = act.filter(j => j.closed_d != null).length;
       const sU = sig.filter(j => j.uc_d != null).length, sC = sig.filter(j => j.closed_d != null).length;
-      SX.ui.kpi(a, { cls: 'kpi--accent', label: 'Active clients who reached UC', value: U.fmtPct(U.ratio(nU, act.length)), sub: U.fmtInt(nU) + ' of ' + U.fmtInt(act.length) + ' Active clients (Carson’s definition)' });
+      SX.ui.kpi(a, { cls: 'kpi--accent', label: 'Active clients who reached UC', value: U.fmtPct(U.ratio(nU, act.length)), sub: U.fmtInt(nU) + ' of ' + U.fmtInt(act.length) + ' Active clients (stated definition)' });
       SX.ui.kpi(a, { cls: 'kpi--accent', label: 'Active clients who reached CLOSED', value: U.fmtPct(U.ratio(nC, act.length)), sub: U.fmtInt(nC) + ' of ' + U.fmtInt(act.length) + ' Active clients' });
       SX.ui.kpi(a, { label: 'All signed-up: reached UC', value: U.fmtPct(U.ratio(sU, sig.length)), sub: U.fmtInt(sU) + ' of ' + U.fmtInt(sig.length) + ', including Paused and Refunded' });
       SX.ui.kpi(a, { label: 'All signed-up: reached CLOSED', value: U.fmtPct(U.ratio(sC, sig.length)), sub: U.fmtInt(sC) + ' of ' + U.fmtInt(sig.length) });
       box.append(a);
       const st = U.groupBy(sig, j => j.status);
-      const rows = Array.from(st.entries()).map(([s, arr]) => ({ s, cls: arr[0].carson_class, n: arr.length, u: arr.filter(j => j.uc_d != null).length, c: arr.filter(j => j.closed_d != null).length, o: (SX.data.defs.status_meta[s] || {}).order || 99 }));
+      const rows = Array.from(st.entries()).map(([s, arr]) => ({ s, cls: arr[0].status_class, n: arr.length, u: arr.filter(j => j.uc_d != null).length, c: arr.filter(j => j.closed_d != null).length, o: (SX.data.defs.status_meta[s] || {}).order || 99 }));
       const g = el('div', { class: 'grid grid-12' });
       const left = el('div', { class: 'span-7' }, [el('h4', { class: 'mt-1', text: 'What sits inside the Active denominator' }), SX.ui.table({ sortKey: 'o', sortDir: 1, columns: [
-        { key: 's', label: 'Current status' }, { key: 'cls', label: 'Carson class' }, { key: 'n', label: 'Clients', num: true },
+        { key: 's', label: 'Current status' }, { key: 'cls', label: 'Status class' }, { key: 'n', label: 'Clients', num: true },
         { key: 'u', label: '% reached UC', num: true, sort: r => r.u / r.n, html: (v, r) => SX.ui.barCell(r.u, r.n, U.fmtPct(r.u / r.n), 'var(--series-1)') },
         { key: 'c', label: '% reached CLOSED', num: true, sort: r => r.c / r.n, html: (v, r) => SX.ui.barCell(r.c, r.n, U.fmtPct(r.c / r.n), 'var(--series-2)') }], rows })]);
       const closedLike = act.filter(j => ['Closed', 'Post-close'].includes(j.group)).length;
@@ -192,7 +192,7 @@
       render({ t }) {
         const all = SX.model.jira({ ignorePeriod: true });
         const months = SX.model.months('2024-03');
-        const newRows = v3.basis === 'signed' ? all.filter(j => j.carson_signed) : all;
+        const newRows = v3.basis === 'signed' ? all.filter(j => j.signed_list) : all;
         const nm = calc().monthCounts(newRows, v3.basis === 'signed' ? 'start' : 'created');
         const um = calc().monthCounts(all, 'uc'), cm = calc().monthCounts(all, 'closed');
         const a = months.map(k => nm.get(k) || 0), b = months.map(k => um.get(k) || 0), c = months.map(k => cm.get(k) || 0);
@@ -214,7 +214,7 @@
     SX.live(r3, box => {
       const all = SX.model.jira({ ignorePeriod: true });
       const last6 = U.monthRange(U.addMonths(SX.data.asofMonth, -6), U.addMonths(SX.data.asofMonth, -1));
-      const nm = calc().monthCounts(all.filter(j => j.carson_signed), 'start'), um = calc().monthCounts(all, 'uc'), am = calc().monthCounts(all, 'created');
+      const nm = calc().monthCounts(all.filter(j => j.signed_list), 'start'), um = calc().monthCounts(all, 'uc'), am = calc().monthCounts(all, 'created');
       const sn = U.sum(last6, k => nm.get(k) || 0), su = U.sum(last6, k => um.get(k) || 0), sa = U.sum(last6, k => am.get(k) || 0);
       box.append(el('div', { class: 'callout mt-0' }, [
         el('h4', { text: 'Last six full months (' + U.fmtMonth(last6[0], true) + '–' + U.fmtMonth(last6[5], true) + ')' }),
@@ -251,15 +251,15 @@
     chk('deals.won', won.length, e.deals.won);
     chk('deals.won_value', U.sum(won, d => d.value), e.deals.won_value);
     chk('deals.median_days_to_win', U.median(won.map(d => d.days_to_win)), e.deals.median_days_to_win);
-    chk('jira.signed', D.jira.filter(j => j.carson_signed).length, e.jira.signed);
-    chk('jira.active', D.jira.filter(j => j.carson_active).length, e.jira.active);
+    chk('jira.signed', D.jira.filter(j => j.signed_list).length, e.jira.signed);
+    chk('jira.active', D.jira.filter(j => j.active_list).length, e.jira.active);
     const su = SX.calc.stats(D.jira.map(j => SX.calc.days(j, 'uc'))), scl = SX.calc.stats(D.jira.map(j => SX.calc.days(j, 'closed')));
     chk('q1.uc.n', su.n, e.q1.uc.n); chk('q1.uc.median', su.median, e.q1.uc.median); chk('q1.uc.mean', +su.mean.toFixed(2), e.q1.uc.mean);
     chk('q1.closed.n', scl.n, e.q1.closed.n); chk('q1.closed.median', scl.median, e.q1.closed.median); chk('q1.closed.mean', +scl.mean.toFixed(2), e.q1.closed.mean);
-    const sig = D.jira.filter(j => j.carson_signed);
+    const sig = D.jira.filter(j => j.signed_list);
     chk('q1.km_uc_signed', SX.calc.km(sig, 'uc').median, e.q1.km_uc_signed);
     chk('q1.km_closed_signed', SX.calc.km(sig, 'closed').median, e.q1.km_closed_signed);
-    const act = D.jira.filter(j => j.carson_active);
+    const act = D.jira.filter(j => j.active_list);
     chk('q2.active_uc', act.filter(j => j.uc_d != null).length, e.q2.active_uc);
     chk('q2.active_closed', act.filter(j => j.closed_d != null).length, e.q2.active_closed);
     const nm = SX.calc.monthCounts(sig, 'start'), um = SX.calc.monthCounts(D.jira, 'uc');

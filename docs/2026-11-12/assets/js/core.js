@@ -330,7 +330,7 @@
       const df = (opts.dateField || 'start') + '_d';
       const pop = opts.population || 'all';
       return SX.data.jira.filter(j =>
-        (pop === 'all' || (pop === 'signed' && j.carson_signed) || (pop === 'active' && j.carson_active)) &&
+        (pop === 'all' || (pop === 'signed' && j.signed_list) || (pop === 'active' && j.active_list)) &&
         (opts.ignorePeriod || inRange(j[df], r)) &&
         dimMatch(j.pd_product, s.product) && dimMatch(j.pd_payment, s.payment) &&
         dimMatch(j.pd_source, s.source) && dimMatch(j.pd_rep, s.rep) && dimMatch(j.pd_experience, s.experience));

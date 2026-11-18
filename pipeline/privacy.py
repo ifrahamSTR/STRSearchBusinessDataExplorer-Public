@@ -66,6 +66,12 @@ def _pseudo(prefix: str, values: pd.Series, width: int) -> dict:
 
 def anonymize(tables: dict[str, pd.DataFrame]) -> None:
     deals, jira, eng = tables["deals"], tables["jira"], tables["engagements"]
+    people = set()                                  # every raw staff name in the people columns, collected before pseudonymising
+    for df, cols in ((deals, ("rep", "setter")), (jira, ("pd_rep", "acq_lead", "assignee")), (eng, ("rep", "setter", "acq_lead"))):
+        for c in cols:
+            if c in df.columns:
+                people |= {str(v) for v in df[c].dropna().unique()}
+    tables["__people__"] = pd.DataFrame({"name": sorted(people - {"Unassigned"})})
     kmap = _pseudo("J", pd.concat([jira["key"], eng["jira_key"], deals["jira_key"]]), 4)
     ids = pd.concat([deals["id"], eng["id"], jira["deal_id"].dropna().astype(int)]).astype(int)
     dmap = _pseudo("D", ids, 4)
@@ -84,7 +90,23 @@ def anonymize(tables: dict[str, pd.DataFrame]) -> None:
     leads = _pseudo("Lead ", pd.concat([jira["acq_lead"], eng["acq_lead"]]).replace("Unassigned", pd.NA), 2)
     leads["Unassigned"] = "Unassigned"
     for df in (jira, eng):
-        df["acq_lead"] = df["acq_lead"].map(lambda v: leads.get(v, v) if pd.notna(v) else v)
+        for col in ("acq_lead", "assignee"):          # `assignee` is the same person as `acq_lead` under its Jira name: same pseudonym
+            if col in df.columns:
+                df[col] = df[col].map(lambda v: leads.get(v, v) if pd.notna(v) else v)
+
+
+def assert_no_staff_names(tables: dict[str, pd.DataFrame]) -> None:
+    """Refuse to write a public table in which a raw staff name (collected by anonymize) still appears in any cell."""
+    people = tables.pop("__people__", None)
+    if people is None or people.empty:
+        return
+    raw = {n for n in people["name"] if len(n) > 3 and " " in n}      # full names; single first names are too generic to scan for
+    for name, df in tables.items():
+        for c in df.columns:
+            if df[c].dtype == object:
+                hit = set(df[c].dropna().astype(str)) & raw
+                if hit:
+                    raise SystemExit(f"Refusing to export {name}.{c}: staff names left in the public data ({sorted(hit)[:3]})")
 
 
 def assert_clean(tables: dict[str, pd.DataFrame]) -> None:

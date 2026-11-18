@@ -463,7 +463,7 @@ table.data tr.row-total td { font-weight: 650; background: var(--surface-2); }
 .clock .seg-line::before { left: -4px; } .clock .seg-line::after { right: -4px; }
 .clock p { font-size: 0.82rem; margin: 0.8rem 0 0; color: var(--ink-muted); }
 
-/* ---------- Q&A blocks (Carson's questions) ---------- */
+/* ---------- Q&A blocks (the three questions) ---------- */
 .question { margin-top: 2.4rem; }
 .question:first-of-type { margin-top: 0.5rem; }
 .q-head { display: flex; gap: 0.9rem; align-items: flex-start; margin-bottom: 1rem; }

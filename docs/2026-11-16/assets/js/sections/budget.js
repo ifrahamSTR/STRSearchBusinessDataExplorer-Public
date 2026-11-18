@@ -1,6 +1,6 @@
 /* Section 3 · Budget performance (added 18 Nov 2026).
    How do clients on different budgets perform, especially up to $250K (discussed as HENRYs) vs above $250K?
-   Budget = the onboarding form's all-in out-of-pocket capital range, read at its upper end (Carson's rule). The historical
+   Budget = the onboarding form's all-in out-of-pocket capital range, read at its upper end (the stated rule). The historical
    HENRY flag (Jira total_oop <= $225K) stays selectable for traceability. Population: won engagements with a confirmed Jira
    start, filtered by the bar above (period = client start date). Every window share counts only eligible clients (the whole
    window has passed). Like-for-like = Mantel-Haenszel risk difference across start month x client experience x start-date

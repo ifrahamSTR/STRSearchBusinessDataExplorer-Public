@@ -56,7 +56,7 @@
   }
  },
  "defs": {
-  "carson": {
+  "status_lists": {
    "signed_up": [
     "Client Start",
     "2 Weeks",
@@ -334,7 +334,7 @@
    "payment": {
     "214": {
      "label": "Likely Split Pay [214]",
-     "evidence": "Inferred, unconfirmed: 92.7% of coded wins; Carson says most clients choose Split Pay."
+     "evidence": "Inferred, unconfirmed: 92.7% of coded wins; most clients are said to choose Split Pay."
     },
     "215": {
      "label": "Likely Full Pay [215]",
@@ -649,10 +649,10 @@
    "id": "unmapped_status",
    "area": "Jira",
    "severity": "serious",
-   "title": "45% of Jira issues sit in statuses outside Carson's lists",
+   "title": "45% of Jira issues sit in statuses outside the status lists",
    "metric": "706 of 1,556",
    "detail": "New Clients, Onboarding Completed and Services Declined are pre-sale stages of the New Client Experience (May 27, 2026). Almost none of them have a won Pipedrive deal.",
-   "impact": "Raw Jira issue counts after May 2026 include prospects. Count clients with Carson's signed-up list.",
+   "impact": "Raw Jira issue counts after May 2026 include prospects. Count clients with the signed-up list.",
    "keys": []
   },
   {
@@ -671,8 +671,8 @@
    "severity": "warning",
    "title": "Existing days_to_* fields count from the due date only",
    "metric": "51 UC dates have no ETL day count",
-   "detail": "days_to_under_contract = first UC \u2212 issue_due_date, and it is blank when the due date is missing. Carson's rule is COALESCE(due, created). This dashboard recomputes days with COALESCE.",
-   "impact": "Reports that use the ETL fields drop these clients and differ slightly from Carson's definition.",
+   "detail": "days_to_under_contract = first UC \u2212 issue_due_date, and it is blank when the due date is missing. The stated rule is COALESCE(due, created). This dashboard recomputes days with COALESCE.",
+   "impact": "Reports that use the ETL fields drop these clients and differ slightly from the stated definition.",
    "keys": []
   },
   {
@@ -1182,7 +1182,7 @@
     "metric": "Jira_Active",
     "verdict": "Misleading name",
     "sev": "critical",
-    "note": "A residual (everything not refunded or closed, 1,230). It is not Carson's active definition (644)."
+    "note": "A residual (everything not refunded or closed, 1,230). It is not the stated Active definition (644)."
    },
    {
     "metric": "Jira_Refunded",

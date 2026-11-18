@@ -33,8 +33,8 @@ def km_median(t: pd.Series, e: pd.Series) -> float | None:
 def expected(deals: pd.DataFrame, jira: pd.DataFrame, asof: pd.Timestamp) -> dict:
     sc = deals[deals.in_scope]
     won = sc[sc.status == "won"]
-    signed = jira[jira.carson_signed]
-    act = jira[jira.carson_active]
+    signed = jira[jira.signed_list]
+    act = jira[jira.active_list]
     # time-to-event for signed-up clients (censored at as-of)
     t_uc = np.where(signed.uc.notna(), signed.days_uc, (asof - signed.start).dt.days)
     t_cl = np.where(signed.closed.notna(), signed.days_closed, (asof - signed.start).dt.days)
@@ -49,7 +49,7 @@ def expected(deals: pd.DataFrame, jira: pd.DataFrame, asof: pd.Timestamp) -> dic
                   "open": int((sc.status == "open").sum()), "won_value": float(won.value.sum()),
                   "median_days_to_win": float(won.days_to_win.median())},
         "jira": {"total": int(len(jira)), "signed": int(len(signed)), "active": int(len(act)),
-                 "inactive": int(jira.carson_inactive.sum()), "unmapped": int((~jira.carson_signed).sum())},
+                 "inactive": int(jira.inactive_list.sum()), "unmapped": int((~jira.signed_list).sum())},
         "q1": {"uc": _stats(jira.days_uc), "closed": _stats(jira.days_closed), "pi": _stats(jira.days_pi),
                "km_uc_signed": km_median(pd.Series(t_uc), pd.Series(signed.uc.notna().values)),
                "km_closed_signed": km_median(pd.Series(t_cl), pd.Series(signed.closed.notna().values))},

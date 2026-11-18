@@ -132,6 +132,8 @@ def main() -> None:
         P.anonymize(tables)
         for q in quality:
             q["keys"] = []
+    if args.anonymize:
+        P.assert_no_staff_names(tables)               # also removes the helper table `__people__`; stops the build if a raw staff name is left
     P.assert_clean(tables)
 
     monthly = f.monthly.drop(columns=["activity_month"])

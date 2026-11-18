@@ -8,11 +8,11 @@
       'Status is today’s value, so these views describe the current book of clients. Milestone dates (first UC, first CLOSED) carry the history. Period filters use the effective start date.');
     SX.live(root, box => {
       const all = SX.model.jira();
-      const sig = all.filter(j => j.carson_signed), act = all.filter(j => j.carson_active);
+      const sig = all.filter(j => j.signed_list), act = all.filter(j => j.active_list);
       const searching = act.filter(j => j.group === 'Searching');
       const asof = SX.data.asofDay;
       const row = el('div', { class: 'kpi-row' });
-      SX.ui.kpi(row, { label: 'Signed-up clients', value: U.fmtInt(sig.length), sub: U.fmtInt(act.length) + ' Active · ' + U.fmtInt(sig.length - act.length) + ' Inactive (Carson)' });
+      SX.ui.kpi(row, { label: 'Signed-up clients', value: U.fmtInt(sig.length), sub: U.fmtInt(act.length) + ' Active · ' + U.fmtInt(sig.length - act.length) + ' Inactive (status list)' });
       SX.ui.kpi(row, { label: 'Searching now', value: U.fmtInt(searching.length), sub: 'Client Start / 2–8 Weeks · median ' + U.fmtInt(U.median(searching.map(j => asof - j.start_d))) + ' days since start' });
       SX.ui.kpi(row, { label: 'Under contract now', value: U.fmtInt(act.filter(j => j.group === 'Under contract').length), sub: 'Under Contract or Passed Inspection' });
       SX.ui.kpi(row, { label: 'Refunded / Paused', value: U.fmtInt(sig.filter(j => j.status === 'Refunded').length) + ' / ' + U.fmtInt(sig.filter(j => j.status === 'Paused').length), sub: U.fmtPct(U.ratio(sig.filter(j => j.status === 'Refunded').length, sig.length), 1) + ' of signed-up clients refunded' });
@@ -35,8 +35,8 @@
             tooltip: Object.assign(C.tooltipBase(t, 'item'), { formatter: C.itemTip(p => ({ title: p.name, rows: [['issues', U.fmtInt(p.value)], ['group', (meta[p.name] || {}).group || 'Other']], note: (meta[p.name] || {}).meaning })) }),
             yAxis: C.catAxis(t, names), xAxis: C.valAxis(t),
             series: [C.bar('Issues', names.map(n => ({ value: cnt.get(n), itemStyle: { color: SX.calc.groupColor(t, (meta[n] || {}).group || 'Other'), borderRadius: [0, 4, 4, 0] } })), t.series[0], { horizontal: true, label: { show: true, position: 'right', color: t.ink2, fontSize: 11 } })] }),
-          table: { columns: [{ key: 's', label: 'Status' }, { key: 'g', label: 'Group' }, { key: 'c', label: 'Carson class' }, { key: 'n', label: 'Issues', num: true }],
-            rows: names.slice().reverse().map(n => ({ s: n, g: (meta[n] || {}).group, c: rows.find(j => j.status === n).carson_class, n: cnt.get(n) })) },
+          table: { columns: [{ key: 's', label: 'Status' }, { key: 'g', label: 'Group' }, { key: 'c', label: 'Status class' }, { key: 'n', label: 'Issues', num: true }],
+            rows: names.slice().reverse().map(n => ({ s: n, g: (meta[n] || {}).group, c: rows.find(j => j.status === n).status_class, n: cnt.get(n) })) },
           foot: 'Groups: pre-sale onboarding (blue), declined (grey), searching (teal), under contract (violet), closed (amber), post-close (magenta), inactive (light grey).',
         };
       },
@@ -72,20 +72,20 @@
         const rows = SX.model.jira({ ignorePeriod: true }).filter(j => j.created_d >= since);
         if (!rows.length) return { empty: true };
         const months = U.uniq(rows.map(j => U.monthKeyFromDay(j.created_d))).sort();
-        const cls = j => j.carson_signed ? 'Signed client' : j.status === 'Services Declined' ? 'Declined' : 'Still pre-sale';
+        const cls = j => j.signed_list ? 'Signed client' : j.status === 'Services Declined' ? 'Declined' : 'Still pre-sale';
         const keys = ['Signed client', 'Still pre-sale', 'Declined'], cols = [t.series[0], t.series[2], t.deemph];
         const series = keys.map((k, i) => C.stackBar(k, months.map(m => rows.filter(j => U.monthKeyFromDay(j.created_d) === m && cls(j) === k).length), cols[i], 'p', t));
         return {
           option: C.base(t, { legend: C.legend(t), tooltip: Object.assign(C.tooltipBase(t), { formatter: C.axisTip(v => U.fmtInt(v)) }), xAxis: C.catAxis(t, months.map(m => U.fmtMonth(m, true))), yAxis: C.valAxis(t), series }),
           table: { columns: [{ key: 'm', label: 'Created' }].concat(keys.map(k => ({ key: k, label: k, num: true }))), rows: months.map((m, i) => Object.assign({ m: U.fmtMonth(m) }, Object.fromEntries(keys.map((k, ki) => [k, series[ki].data[i]])))) },
-          foot: 'Of ' + U.fmtInt(rows.length) + ' issues opened since the change, <b>' + U.fmtPct(rows.filter(j => j.carson_signed).length / rows.length) + '</b> are signed clients today and <b>' + U.fmtPct(rows.filter(j => j.status === 'Services Declined').length / rows.length) + '</b> declined. Recent months are still deciding.',
+          foot: 'Of ' + U.fmtInt(rows.length) + ' issues opened since the change, <b>' + U.fmtPct(rows.filter(j => j.signed_list).length / rows.length) + '</b> are signed clients today and <b>' + U.fmtPct(rows.filter(j => j.status === 'Services Declined').length / rows.length) + '</b> declined. Recent months are still deciding.',
         };
       },
     });
     SX.live(pr, box => {
       const rows = SX.model.jira({ population: 'signed' });
       const ga = U.groupBy(rows, j => j.assignee);
-      const data = Array.from(ga.entries()).map(([a, arr]) => ({ a, n: arr.length, act: arr.filter(j => j.carson_active && ['Searching', 'Under contract'].includes(j.group)).length,
+      const data = Array.from(ga.entries()).map(([a, arr]) => ({ a, n: arr.length, act: arr.filter(j => j.active_list && ['Searching', 'Under contract'].includes(j.group)).length,
         uc: arr.filter(j => j.uc_d != null).length, cl: arr.filter(j => j.closed_d != null).length, md: U.median(arr.map(j => SX.calc.days(j, 'uc')).filter(v => v != null)) })).filter(x => x.n >= 3);
       box.append(el('h4', { text: 'Acquisitions team workload (Jira assignee, signed-up clients)' }), SX.ui.table({ sortKey: 'act', cls: 'explorer-table', columns: [
         { key: 'a', label: 'Assignee' }, { key: 'n', label: 'Clients', num: true }, { key: 'act', label: 'Searching / UC now', num: true },
@@ -124,7 +124,7 @@
           const j = jByDeal.get(String(d.id));
           if (d.status === 'won') {
             if (!j) { add('Won', 'No Jira issue'); return; }
-            if (!j.carson_signed) { add('Won', 'Jira: not signed-up status'); return; }
+            if (!j.signed_list) { add('Won', 'Jira: not signed-up status'); return; }
             add('Won', 'Signed-up client');
             if (j.status === 'Refunded' || j.status === 'Paused') { add('Signed-up client', 'Refunded / Paused'); return; }
             if (j.uc_d == null) { add('Signed-up client', 'Searching / no UC yet'); return; }

@@ -127,7 +127,7 @@
     "column": "M",
     "since": "2026-04-20",
     "measures": "down payment + closing costs + renovation + furniture + amenities: all-in capital, not the purchase price",
-    "rule": "upper end of the selected range (Carson's interim rule, also being carried into Jira's budget field)",
+    "rule": "upper end of the selected range (the interim rule, also being carried into Jira's budget field)",
     "threshold_k": 250,
     "matched": 394,
     "confirmed_starts": 825,
@@ -373,7 +373,7 @@
     "unit": "Confirmed starts with a matched form answer",
     "date": "Answer given before the client's UC date",
     "source": "Onboarding form 'Total out-of-pocket capital available (all-in)' (column M, live since 20 Apr 2026), matched by e-mail (form deal id as a fallback)",
-    "calc": "The selected range read at its upper end (Carson's interim rule, also being carried into Jira's budget field). Up to $250K = upper end ≤ $250K; Above $250K = upper end > $250K. It measures all-in capital (down payment + closing costs + renovation + furniture + amenities), not the purchase price."
+    "calc": "The selected range read at its upper end (the interim rule, also being carried into Jira's budget field). Up to $250K = upper end ≤ $250K; Above $250K = upper end > $250K. It measures all-in capital (down payment + closing costs + renovation + furniture + amenities), not the purchase price."
    },
    {
     "key": "budget_strict",

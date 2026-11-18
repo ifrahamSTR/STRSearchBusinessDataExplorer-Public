@@ -1,13 +1,13 @@
 """Business definitions used by the Business Data Explorer build.
 
 Everything that encodes a business rule lives here, so a definition change is a one-line,
-reviewable diff. Source precedence (from the 13 Nov 2026 handoff): latest Carson instruction >
+reviewable diff. Source precedence (from the 13 Nov 2026 handoff): latest stated instruction >
 verified source data & scripts > Q1-2026 onboarding docs > analyst interpretation.
 """
 from __future__ import annotations
 
 # --------------------------------------------------------------------------------------
-# Carson's Jira status classification: preserved verbatim (handoff PDF, Section 05).
+# The Jira status classification: preserved verbatim (handoff PDF, Section 05).
 # Both case variants of Under Contract are intentional: 'under Contract' is a historical
 # status name that still appears in Jira changelog fields (previous_status / latest_status).
 # --------------------------------------------------------------------------------------
@@ -20,12 +20,12 @@ SIGNED_UP_STATUSES = [
 INACTIVE_STATUSES = ["Refunded", "Paused", "Additional Service"]
 ACTIVE_STATUSES = [s for s in SIGNED_UP_STATUSES if s not in INACTIVE_STATUSES]
 
-# Carson's effective client start: COALESCE(issue_due_date, issue_created_date)
+# The effective client start: COALESCE(issue_due_date, issue_created_date)
 EFFECTIVE_START_RULE = "COALESCE(issue_due_date, issue_created_date)"
 
 # --------------------------------------------------------------------------------------
 # Status metadata for presentation. 'group' orders the lifecycle; 'meaning' is what the data
-# shows (not an official definition). Statuses outside Carson's lists are flagged.
+# shows (not an official definition). Statuses outside the status lists are flagged.
 # --------------------------------------------------------------------------------------
 STATUS_GROUPS = [
     ("Pre-sale onboarding", "Prospect has a Jira issue but has not bought (New Client Experience, since late May 2026)."),
@@ -77,9 +77,9 @@ SEARCH_PRODUCT_OPTIONS = {
     "202": {"label": "Core", "evidence": "Raw_Pipedrive (Supabase EDA) labels 43 of 45 labelled [202] deals 'Core'."},
 }
 # No text label for Payment Type exists in any extract. The labels below are an INFERENCE (flagged in the UI):
-# [214] is 92.7% of coded wins, consistent with Carson's statement that most clients choose Split Pay.
+# [214] is 92.7% of coded wins, consistent with the stated claim that most clients choose Split Pay.
 PAYMENT_TYPE_OPTIONS: dict[str, dict] = {
-    "214": {"label": "Likely Split Pay [214]", "evidence": "Inferred, unconfirmed: 92.7% of coded wins; Carson says most clients choose Split Pay."},
+    "214": {"label": "Likely Split Pay [214]", "evidence": "Inferred, unconfirmed: 92.7% of coded wins; most clients are said to choose Split Pay."},
     "215": {"label": "Likely Full Pay [215]", "evidence": "Inferred, unconfirmed: the remaining coded option."},
 }
 

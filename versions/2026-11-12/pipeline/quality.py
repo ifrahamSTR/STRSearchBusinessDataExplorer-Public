@@ -11,19 +11,19 @@ def _keys(s: pd.Series, n: int = 60) -> list:
 
 def run_checks(deals: pd.DataFrame, jira: pd.DataFrame, frames: dict, asof: pd.Timestamp) -> list[dict]:
     sc = deals[deals.in_scope]
-    signed = jira[jira.carson_signed]
+    signed = jira[jira.signed_list]
     out = []
 
     def add(id_, area, sev, title, metric, detail, impact, keys=None):
         out.append({"id": id_, "area": area, "severity": sev, "title": title, "metric": metric,
                     "detail": detail, "impact": impact, "keys": keys or []})
 
-    un = jira[~jira.carson_signed]
-    add("unmapped_status", "Jira", "serious", "45% of Jira issues sit in statuses outside Carson's lists",
+    un = jira[~jira.signed_list]
+    add("unmapped_status", "Jira", "serious", "45% of Jira issues sit in statuses outside the status lists",
         f"{len(un):,} of {len(jira):,}",
         "New Clients, Onboarding Completed and Services Declined are pre-sale stages of the New Client Experience "
         "(May 27, 2026). Almost none of them have a won Pipedrive deal.",
-        "Raw Jira issue counts after May 2026 include prospects. Count clients with Carson's signed-up list.",
+        "Raw Jira issue counts after May 2026 include prospects. Count clients with the signed-up list.",
         _keys(un.key))
     nodue = signed[signed.due.isna()]
     add("missing_due", "Jira", "warning", "Signed-up clients without an issue_due_date",
@@ -34,8 +34,8 @@ def run_checks(deals: pd.DataFrame, jira: pd.DataFrame, frames: dict, asof: pd.T
     add("etl_days_due_only", "Jira", "warning", "Existing days_to_* fields count from the due date only",
         f"{len(etl_gap):,} UC dates have no ETL day count",
         "days_to_under_contract = first UC − issue_due_date, and it is blank when the due date is missing. "
-        "Carson's rule is COALESCE(due, created). This dashboard recomputes days with COALESCE.",
-        "Reports that use the ETL fields drop these clients and differ slightly from Carson's definition.", _keys(etl_gap.key))
+        "The stated rule is COALESCE(due, created). This dashboard recomputes days with COALESCE.",
+        "Reports that use the ETL fields drop these clients and differ slightly from the stated definition.", _keys(etl_gap.key))
     cl_no_uc = signed[signed.closed.notna() & signed.uc.isna()]
     add("closed_without_uc", "Jira", "serious", "Closed clients with no first Under Contract date",
         f"{len(cl_no_uc):,}",
@@ -124,7 +124,7 @@ def reconcile_daily(daily: pd.DataFrame, deals: pd.DataFrame, jira: pd.DataFrame
         {"metric": "PD_Avg_Days_Won", "verdict": "Caution", "sev": "warning", "note": "Daily averages must be deal-weighted (53.8 days). A plain mean of daily values gives 62.6. The median is 21."},
         {"metric": "Jira_Clients", "verdict": "Caution", "sev": "serious", "note": "Counts every Jira issue, including pre-sale prospects since May 2026, plus 10 brokerage issues not in the DIM."},
         {"metric": "Jira_Won", "verdict": "Misleading name", "sev": "critical", "note": "Current status = CLOSED (property closed), not won or signed clients."},
-        {"metric": "Jira_Active", "verdict": "Misleading name", "sev": "critical", "note": "A residual (everything not refunded or closed, 1,230). It is not Carson's active definition (644)."},
+        {"metric": "Jira_Active", "verdict": "Misleading name", "sev": "critical", "note": "A residual (everything not refunded or closed, 1,230). It is not the stated Active definition (644)."},
         {"metric": "Jira_Refunded", "verdict": "Trust", "sev": "good", "note": "Current status = Refunded (92)."},
     ]
     return {"monthly": rows, "verdicts": verdicts}
